@@ -13,13 +13,13 @@ Make a short tutorial.
 
 Context radial menu with four icons:
 Delete/Undo on the left, 
-complete on the right 
-edit on the top
+complete on the right, 
+edit on the top,
 bring up main menu on the bottom
 
 Inside of main menu:
-Save image
-Load image
-Save polygon map
-Load polygon map
+Save image,
+Load image,
+Save polygon map,
+Load polygon map,
 Edit on the top
