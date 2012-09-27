@@ -1,8 +1,9 @@
 package hci.menu;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.io.*;
 
+import hci.menu.icon.*;
 import hci.util.Point;
 
 public class RadialMenu {
@@ -18,6 +19,19 @@ public class RadialMenu {
 	private boolean visible = false;
 	private Point position;
 	private double alphaMod = 1;
+	private IconManager iconman;
+	
+	public RadialMenu() throws IOException, FileNotFoundException
+	{
+		// load icons
+		Icon[] icons = {
+				new CompleteIcon(),
+				new EditIcon(),
+				new DeleteIcon(),
+		};
+		
+		iconman = new IconManager(icons);
+	}
 	
 	public void show(Point p)
 	{
@@ -72,7 +86,7 @@ public class RadialMenu {
 		// 0
 		g.fillOval(position.getX() - (int)(SIZE/2), position.getY() - (int)(SIZE/2), SIZE, SIZE);
 		
-		// 1
+		// 1EditIcon
 		g.fillOval(position.getX() - (int)(SIZE/2), position.getY() - SIZE - 20 - (int)(SIZE/2), SIZE, SIZE);
 		
 		// 3
@@ -80,6 +94,20 @@ public class RadialMenu {
 		
 		// 7
 		g.fillOval(position.getX() - (int)(SIZE/2) + SIZE + 20, position.getY() - (int)(SIZE/2), SIZE, SIZE);
+		
+		// icons
+		g2d.setComposite(AlphaComposite.getInstance(type, (0.8f * (float)alphaMod)));
+		
+		// 1
+		g.drawImage(iconman.getIconByName("EditIcon").getImage(), position.getX() - (int)(SIZE/2) + 10, position.getY() - SIZE - 10 - (int)(SIZE/2), null);
+		
+		// 3
+		g.drawImage(iconman.getIconByName("CompleteIcon").getImage(), position.getX() - (int)(SIZE/2) + SIZE + 30, position.getY() - (int)(SIZE/2) + 10, null);
+		
+		// 7
+		g.drawImage(iconman.getIconByName("DeleteIcon").getImage(), position.getX() - (int)(SIZE/2) - SIZE - 10, position.getY() - (int)(SIZE/2) + 10, null);
+		
+		
 		
 		g2d.setComposite(c);
 		
