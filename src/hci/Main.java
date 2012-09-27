@@ -11,7 +11,7 @@ public class Main {
 		{
 		
 			@SuppressWarnings("unused")
-			Viewer v = new Viewer(800,600,"/home/will/uni/hci/images/U1003_0000.jpg");
+			Viewer v = new Viewer(800,600,args[0]);
 			
 		}
 		catch (Exception e)
