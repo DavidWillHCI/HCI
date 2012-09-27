@@ -11,6 +11,14 @@ public class Polygon {
 	
 	public void addPoint(Point p)
 	{
+		if (points.size() > 0)
+		{
+			if (points.get(points.size()-1).getX() == p.getX() && points.get(points.size()-1).getY() == p.getY())
+			{
+				return;
+			}
+		}
+		
 		points.add(p);
 		System.out.println("New point: " + p.toString());
 	}
