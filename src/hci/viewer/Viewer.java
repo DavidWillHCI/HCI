@@ -86,6 +86,17 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 				repaint();
 			}
 			
+			// unhighlight all polygons
+			if (polman.openPolygon())
+			{
+				
+				if (polman.removeHighlights())
+				{
+					repaint();
+				}
+				
+			}
+			
 		}
 		
 	}
@@ -111,7 +122,7 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 			menu.show(new Point(me.getX(), me.getY()));
 			setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
 		            new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new java.awt.Point(0, 0),
-		            "null"));
+		           "null"));
 			repaint();
 		}
 		
@@ -124,33 +135,61 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		{
 		case MouseEvent.BUTTON3:
 			
-			int state = menu.close();
-			
-			switch (state)
-			{
-			case 0:
-				break;
-			case 1:
-				polman.finishPolygon();
-				break;
-			}
-			
-			// attempt to move the mouse back to where it was 
-			// this should probably be adapted to put the mouse to a more meaningful position
-			try
+			if (menu.showing())
 			{
 				
-				Robot r = new Robot();
-				r.mouseMove((int)(menu.getPosition().getX() + this.getLocationOnScreen().getX()), (int)(menu.getPosition().getY() + this.getLocationOnScreen().getY()));
+				int state = menu.close();
+					
+				switch (state)
+				{
+				case 0:
+					break;
+				case 1:
+					if (polman.editHighlighted())
+					{
+						repaint();
+					}
+					break;
+				case 3:
+					polman.finishPolygon();
+					repaint();
+					break;
+				case 7:
+					if (polman.openPolygon())
+					{
+						if (polman.removeLastPoint())
+						{
+							repaint();
+						}
+					}
+					else
+					{
+						if (polman.removeHighlighted())
+						{
+							repaint();
+						}
+					}
+					break;
+				}
 				
-			}
-			catch (Exception e)
-			{
-				
+				// attempt to move the mouse back to where it was 
+				// this should probably be adapted to put the mouse to a more meaningful position
+				try
+				{
+					
+					Robot r = new Robot();
+					r.mouseMove((int)(menu.getPosition().getX() + this.getLocationOnScreen().getX()), (int)(menu.getPosition().getY() + this.getLocationOnScreen().getY()));
+					
+				}
+				catch (Exception e)
+				{
+					
+				}
+
+				repaint();
 			}
 			
 			setCursor(Cursor.getDefaultCursor());
-			repaint();
 		}
 		
 	}

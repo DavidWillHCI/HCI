@@ -28,10 +28,13 @@ public class PolygonManager {
 		
 		TaggedPolygon p = polygons.get(polygons.size() - 1);
 		
-		if (!p.isComplete())
+		if (p.size() < 3)
 		{
-			p.complete();
+			polygons.remove(polygons.size() - 1);
+			return;
 		}
+		
+		p.complete();
 		
 	}
 	
@@ -78,6 +81,64 @@ public class PolygonManager {
 		
 	}
 	
+	public boolean removeHighlights()
+	{
+		
+		boolean repaint = false;
+
+		for (int i = polygons.size()-1; i >= 0; i--)
+		{
+			
+			if (polygons.get(i).resetHighlight())
+			{
+				repaint = true;
+			}
+			
+		}
+		
+		return repaint;
+		
+	}
+	
+	public boolean editHighlighted()
+	{
+		
+		boolean repaint = false;
+		
+		for (int i = 0; i < polygons.size(); i++)
+		{
+			
+			if (polygons.get(i).isHighlighted())
+			{
+				polygons.get(i).edit();
+				repaint = true;
+				break;
+			}
+			
+		}
+		
+		return repaint;
+		
+	}
+	
+	public boolean removeHighlighted()
+	{
+		boolean repaint = false;
+		Iterator i = polygons.iterator();
+		while (i.hasNext())
+		{
+			TaggedPolygon p = (TaggedPolygon) i.next();
+			
+			if (p.isHighlighted())
+			{
+				i.remove();
+				repaint = true;
+			}
+		}
+		
+		return repaint;
+	}
+	
 	public boolean openPolygon()
 	{
 		if (polygons.size() == 0)
@@ -85,7 +146,17 @@ public class PolygonManager {
 			return false;
 		}
 		
-		return !polygons.get(polygons.size() - 1).isComplete();
+		return !polygons.get(polygons.size() - 1).isComplete() || polygons.get(polygons.size() - 1).isEditing();
+	}
+	
+	public boolean isEditing()
+	{
+		if (polygons.size() == 0)
+		{
+			return false;
+		}
+		
+		return polygons.get(polygons.size()-1).isEditing();
 	}
 	
 	public void addNewPoint(Point p)
@@ -103,7 +174,7 @@ public class PolygonManager {
 			polygons.add(polygon);
 		}
 		
-		if (polygon.isComplete())
+		if (polygon.isComplete() && !polygon.isEditing())
 		{
 			polygon = new TaggedPolygon();
 			polygons.add(polygon);
@@ -123,6 +194,30 @@ public class PolygonManager {
 		}
 		
 		return pArr;
+	}
+	
+	public boolean removeLastPoint()
+	{
+		
+		if (polygons.size() == 0)
+			return false;
+		
+		if (openPolygon())
+		{
+			
+			if (polygons.get(polygons.size()-1).removeLastPoint())
+			{
+				if (polygons.get(polygons.size() - 1).size() == 0)
+				{
+					polygons.remove(polygons.size() - 1);
+				}
+				return true;
+			}
+			
+		}
+		
+		return false;
+		
 	}
 	
 	public String toString()

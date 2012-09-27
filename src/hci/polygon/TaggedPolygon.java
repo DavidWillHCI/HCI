@@ -11,6 +11,7 @@ public class TaggedPolygon extends Polygon {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private boolean editing = false;
 	private boolean complete = false;
 	private boolean highlighted = false;
 	
@@ -46,19 +47,28 @@ public class TaggedPolygon extends Polygon {
 		
 	}
 	
-	public void removeLastPoint()
+	public boolean removeLastPoint()
 	{
 		
 		if (size() > 0)
 		{
 			npoints--;
+			
+			if (editing)
+			{
+				complete = false;
+			}
+			
+			return true;
 		}
+		return false;
 		
 	}
 	
 	public void complete()
 	{
 		complete = true;
+		editing = false;
 	}
 	
 	public Point[] getPoints()
@@ -78,6 +88,11 @@ public class TaggedPolygon extends Polygon {
 	
 	public boolean movePoint(Point p1, Point p2)
 	{
+		if (!editing)
+		{
+			return false;
+		}
+		
 		for (int i = 0; i < size(); i++)
 		{
 			if (xpoints[i] == p1.getX() && ypoints[i] == p1.getY())
@@ -108,25 +123,14 @@ public class TaggedPolygon extends Polygon {
 		return oldHighlighted != highlighted;
 	}
 	
-	/*
-	public String toString()
+	public void edit()
 	{
-		String s = "[Polygon";
-		
-		if (size() == 0)
-		{
-			return s + "]";
-		}
-		
-		s = s + "\n" + points.get(0).toString();
-		
-		for (int i = 1; i < points.size(); i++)
-		{
-			s = s + ", " + points.get(i).toString();
-		}
-		
-		return s + "]";
+		editing = true;
 	}
-	*/
+	
+	public boolean isEditing()
+	{
+		return editing;
+	}
 	
 }

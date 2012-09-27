@@ -64,7 +64,7 @@ public class TaggedImage {
 	private void drawPolygon(Graphics g, TaggedPolygon polygon)
 	{
 		
-		if (polygon.isComplete())
+		if (polygon.isComplete() && !polygon.isEditing())
 		{
 			if (polygon.isHighlighted())
 			{
@@ -99,7 +99,7 @@ public class TaggedImage {
 			System.out.println("Drawing: " + points[i].toString());
 		}
 		
-		if (polygon.isComplete())
+		if (polygon.isEditing() && polygon.isComplete())
 		{
 			g.drawLine(lastPoint.getX(), lastPoint.getY(), points[0].getX(), points[0].getY());
 		}
