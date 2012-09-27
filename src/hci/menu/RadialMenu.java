@@ -65,12 +65,14 @@ public class RadialMenu {
 		return visible;
 	}
 	
-	public void close()
+	public int close()
 	{
 		
 		// accept current menu item
 		System.out.println("Menu closed with state = " + state);
 		hide();
+		
+		return state;
 		
 	}
 	

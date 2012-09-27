@@ -123,7 +123,17 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON3:
-			menu.close();
+			
+			int state = menu.close();
+			
+			switch (state)
+			{
+			case 0:
+				break;
+			case 1:
+				polman.finishPolygon();
+				break;
+			}
 			
 			// attempt to move the mouse back to where it was 
 			// this should probably be adapted to put the mouse to a more meaningful position
@@ -161,7 +171,15 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseMoved(MouseEvent me) {
 		
+		if (!polman.openPolygon())
+		{
 		
+			if (polman.updateHighlights(new Point(me.getX(), me.getY())))
+			{
+				repaint();
+			}
+			
+		}
 		
 	}
 	

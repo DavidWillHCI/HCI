@@ -1,6 +1,6 @@
 package hci.viewer;
 
-import hci.polygon.Polygon;
+import hci.polygon.TaggedPolygon;
 import hci.polygon.PolygonManager;
 import hci.util.Point;
 
@@ -52,20 +52,35 @@ public class TaggedImage {
 		// draw the polygons
 		g.setColor(Color.GREEN);
 		
-		Polygon[] polygons = polman.getPolygons();
+		TaggedPolygon[] polygons = polman.getPolygons();
 		
 		for (int i = 0; i < polygons.length; i++)
 		{
 			drawPolygon(g,polygons[i]);
 		}
 		
-		// draw the menu
-		
-		
 	}
 	
-	private void drawPolygon(Graphics g, Polygon polygon)
+	private void drawPolygon(Graphics g, TaggedPolygon polygon)
 	{
+		
+		if (polygon.isComplete())
+		{
+			if (polygon.isHighlighted())
+			{
+				Graphics2D g2d = (Graphics2D)g;
+				Composite c = g2d.getComposite();
+				int type = AlphaComposite.SRC_OVER;
+				g2d.setComposite(AlphaComposite.getInstance(type, 0.4f));
+				g.fillPolygon(polygon);
+				g2d.setComposite(c);
+			}
+			else
+			{
+				g.drawPolygon(polygon);
+			}
+			return;
+		}
 		
 		Point[] points = polygon.getPoints();
 		

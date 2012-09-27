@@ -6,7 +6,7 @@ import java.util.*;
 
 public class PolygonManager {
 	
-	private ArrayList<Polygon> polygons = new ArrayList<Polygon>();
+	private ArrayList<TaggedPolygon> polygons = new ArrayList<TaggedPolygon>();
 	
 	public void loadPolygons(int hash)
 	{
@@ -20,24 +20,92 @@ public class PolygonManager {
 		
 	}
 	
+	public void finishPolygon()
+	{
+		
+		if (polygons.size() == 0)
+			return;
+		
+		TaggedPolygon p = polygons.get(polygons.size() - 1);
+		
+		if (!p.isComplete())
+		{
+			p.complete();
+		}
+		
+	}
+	
+	public void resetHighlights()
+	{
+		for (int i = 0; i < polygons.size(); i++)
+		{
+			polygons.get(i).resetHighlight();
+		}
+	}
+	
+	public boolean updateHighlights(Point p)
+	{
+		
+		boolean highlightedPolygon = false,
+				repaint = false;
+		
+		for (int i = polygons.size()-1; i >= 0; i--)
+		{
+			
+			if (!highlightedPolygon)
+			{
+				if (polygons.get(i).updateHighlight(p))
+				{
+					repaint = true;
+				}
+				
+				if (polygons.get(i).isHighlighted())
+				{
+					highlightedPolygon = true;
+				}
+			}
+			else
+			{
+				if (polygons.get(i).resetHighlight())
+				{
+					repaint = true;
+				}
+			}
+			
+		}
+		
+		return repaint;
+		
+	}
+	
+	public boolean openPolygon()
+	{
+		if (polygons.size() == 0)
+		{
+			return false;
+		}
+		
+		return !polygons.get(polygons.size() - 1).isComplete();
+	}
+	
 	public void addNewPoint(Point p)
 	{
 		
 		// if last polygon is complete, start new one
-		Polygon polygon;
+		TaggedPolygon polygon;
 		if (polygons.size() > 0)
 		{
 			polygon = polygons.get(polygons.size()-1);
 		}
 		else
 		{
-			polygon = new Polygon();
+			polygon = new TaggedPolygon();
 			polygons.add(polygon);
 		}
 		
 		if (polygon.isComplete())
 		{
-			polygon = new Polygon();
+			polygon = new TaggedPolygon();
 			polygons.add(polygon);
 		}
 		
@@ -45,9 +113,9 @@ public class PolygonManager {
 		
 	}
 	
-	public Polygon[] getPolygons()
+	public TaggedPolygon[] getPolygons()
 	{
-		Polygon[] pArr = new Polygon[polygons.size()];
+		TaggedPolygon[] pArr = new TaggedPolygon[polygons.size()];
 		
 		for (int i = 0; i < polygons.size(); i++)
 		{
