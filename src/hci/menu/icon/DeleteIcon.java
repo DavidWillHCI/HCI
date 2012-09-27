@@ -4,7 +4,7 @@ public class DeleteIcon extends Icon {
 
 	@Override
 	public String getFileName() {
-		return "/afs/inf.ed.ac.uk/user/s08/s0818057/hci/HCI/icons/Delete.png";
+		return "icons/Delete.png";
 	}
 
 	@Override
