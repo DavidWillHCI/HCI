@@ -3,16 +3,25 @@ package hci;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Polygon;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+
+
+
+import javax.swing.JFrame;
+
 
 import hci.utils.*;
 
@@ -21,7 +30,7 @@ import hci.utils.*;
  * @author Michal
  *
  */
-public class ImagePanel extends JPanel implements MouseListener {
+public class ImagePanel extends JPanel implements MouseListener, MouseMotionListener {
 	/**
 	 * some java stuff to get rid of warnings
 	 */
@@ -31,23 +40,31 @@ public class ImagePanel extends JPanel implements MouseListener {
 	 * image to be tagged
 	 */
 	BufferedImage image = null;
-	
+
 	/**
 	 * list of current polygon's vertices 
 	 */
 	ArrayList<Point> currentPolygon = null;
-	
+
 	/**
 	 * list of polygons
 	 */
 	ArrayList<ArrayList<Point>> polygonsList = null;
-	
+
+	/**
+	 * My own actual arraylist of polygons
+	 */
+	ArrayList<Polygon> myPolygonList = null;
+
 	/**
 	 * default constructor, sets up the window properties
 	 */
 	public ImagePanel() {
+
+
 		currentPolygon = new ArrayList<Point>();
 		polygonsList = new ArrayList<ArrayList<Point>>();
+		myPolygonList = new ArrayList<Polygon>();
 
 		this.setVisible(true);
 
@@ -56,10 +73,11 @@ public class ImagePanel extends JPanel implements MouseListener {
 		this.setMinimumSize(panelSize);
 		this.setPreferredSize(panelSize);
 		this.setMaximumSize(panelSize);
-		
+
 		addMouseListener(this);
+		addMouseMotionListener(this);
 	}
-	
+
 	/**
 	 * extended constructor - loads image to be labelled
 	 * @param imageName - path to image
@@ -83,30 +101,30 @@ public class ImagePanel extends JPanel implements MouseListener {
 	 */
 	public void ShowImage() {
 		Graphics g = this.getGraphics();
-		
+
 		if (image != null) {
 			g.drawImage(
 					image, 0, 0, null);
 		}
 	}
-	
+
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		
+
 		//display iamge
 		ShowImage();
-		
+
 		//display all the completed polygons
 		for(ArrayList<Point> polygon : polygonsList) {
 			drawPolygon(polygon);
 			finishPolygon(polygon);
 		}
-		
+
 		//display current polygon
 		drawPolygon(currentPolygon);
 	}
-	
+
 	/**
 	 * displays a polygon without last stroke
 	 * @param polygon to be displayed
@@ -123,7 +141,7 @@ public class ImagePanel extends JPanel implements MouseListener {
 			g.fillOval(currentVertex.getX() - 5, currentVertex.getY() - 5, 10, 10);
 		}
 	}
-	
+
 	/**
 	 * displays last stroke of the polygon (arch between the last and first vertices)
 	 * @param polygon to be finished
@@ -133,13 +151,13 @@ public class ImagePanel extends JPanel implements MouseListener {
 		if (polygon.size() >= 3) {
 			Point firstVertex = polygon.get(0);
 			Point lastVertex = polygon.get(polygon.size() - 1);
-		
+
 			Graphics2D g = (Graphics2D)this.getGraphics();
 			g.setColor(Color.GREEN);
 			g.drawLine(firstVertex.getX(), firstVertex.getY(), lastVertex.getX(), lastVertex.getY());
 		}
 	}
-	
+
 	/**
 	 * moves current polygon to the list of polygons and makes pace for a new one
 	 */
@@ -148,8 +166,24 @@ public class ImagePanel extends JPanel implements MouseListener {
 		if (currentPolygon != null ) {
 			finishPolygon(currentPolygon);
 			polygonsList.add(currentPolygon);
+
+			// Add the polygon as an actual polygon object to my own data structure
+			// currentPolygon is just an ArrayList of point objects
+			int[] listOfX = new int[100];
+			int[] listOfY = new int[100];
+			int numberOfPoints = 0;
+			for (int i = 0; i < currentPolygon.size(); i++){
+
+				numberOfPoints += 1;
+				listOfX[i] = currentPolygon.get(i).getX();
+				listOfY[i] = currentPolygon.get(i).getY();
+
+
+			}
+			Polygon newPolygon = new Polygon(listOfX, listOfY, numberOfPoints);
+			myPolygonList.add(newPolygon);
 		}
-		
+
 		currentPolygon = new ArrayList<Point>();
 	}
 
@@ -157,15 +191,15 @@ public class ImagePanel extends JPanel implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		
+
 		//check if the cursos withing image area
 		if (x > image.getWidth() || y > image.getHeight()) {
 			//if not do nothing
 			return;
 		}
-		
+
 		Graphics2D g = (Graphics2D)this.getGraphics();
-		
+
 		//if the left button than we will add a vertex to poly
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			g.setColor(Color.GREEN);
@@ -174,19 +208,67 @@ public class ImagePanel extends JPanel implements MouseListener {
 				g.drawLine(lastVertex.getX(), lastVertex.getY(), x, y);
 			}
 			g.fillOval(x-5,y-5,10,10);
-			
+
 			currentPolygon.add(new Point(x,y));
 			System.out.println(x + " " + y);
 		} 
 	}
 
+	//add a mouselistener that outputs the coordinates of the pointer when it is inside of a region
+	public void mouseMoved(MouseEvent e) {
+
+		Graphics g = this.getGraphics();
+
+		int currentX = e.getX();
+		int currentY = e.getY();
+
+		for (int i = 0; i < myPolygonList.size(); i++){
+
+			if (myPolygonList.get(i).contains(currentX, currentY)){
+
+				g.setColor(Color.BLACK);
+				// You colour it in
+				g.fillPolygon(myPolygonList.get(i));
+
+			}
+
+
+		}
+
+		for (int i = 0; i < myPolygonList.size(); i++){
+
+			/*	if (!myPolygonList.get(i).contains(currentX, currentY)){
+
+				g.clearRect(0, 0, getWidth(), getHeight());
+				paint(getGraphics());
+
+			}*/	
+
+
+		}
+
+
+
+	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
+
+		Graphics g = this.getGraphics();
+
+		g.clearRect(0, 0, getWidth(), getHeight());
+		paint(getGraphics());
+
+
+
+
 	}
+
+
+
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
@@ -195,5 +277,11 @@ public class ImagePanel extends JPanel implements MouseListener {
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 	}
-	
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
