@@ -190,7 +190,7 @@ public class PolygonManager {
 			return false;
 		}
 		
-		return !polygons.get(polygons.size() - 1).isComplete() || polygons.get(polygons.size() - 1).isEditing();
+		return !polygons.get(polygons.size() - 1).isComplete() || isEditing();
 	}
 	
 	public boolean isEditing()

@@ -186,26 +186,56 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 				case 0:
 					break;
 				case 1:
-					if (!polman.editHighlighted())
+					if (polman.isEditing() || !polman.editHighlighted())
 					{
 						showFeedback = true;
 					}
 					break;
 				case 3:
-					if (!polman.finishPolygon())
+					if (polman.openPolygon())
+					{
+						if (!polman.finishPolygon())
+						{
+							showFeedback = true;
+						}
+					}
+					else
 					{
 						showFeedback = true;
 					}
 					break;
 				case 7:
-
-					if (!polman.openPolygon())
+					
+					if (!polman.isEditing())
 					{
-						if (!polman.removeHighlighted())
+						if (polman.openPolygon())
 						{
-							showFeedback = true;
+							if (polman.removeLastPoint())
+							{
+								repaint();
+							}
+							else
+							{
+								showFeedback = true;
+							}
+						}
+						else
+						{
+							if (polman.removeHighlighted())
+							{
+								repaint();
+							}
+							else
+							{
+								showFeedback = true;
+							}
 						}
 					}
+					else
+					{
+						showFeedback = true;
+					}
+					
 					break;
 				}
 				
