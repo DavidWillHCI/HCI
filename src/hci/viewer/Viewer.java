@@ -9,6 +9,7 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.*;
 
 public class Viewer extends JPanel implements MouseListener, MouseMotionListener {
 	
@@ -27,6 +28,10 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 	
 	private RadialMenu menu;
 	
+	private Queue<Painter> painterQueue = new LinkedList<Painter>();
+	
+	private FeedbackHandler feedback;
+	
 	public Viewer(int w, int h, String file) throws IOException, FileNotFoundException
 	{
 		
@@ -43,6 +48,8 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		menu = new RadialMenu();
 		
 		container.setResizable(false);
+		
+		feedback = new FeedbackHandler(this);
 		
 		container.addWindowListener(new WindowAdapter() {
 		  	public void windowClosing(WindowEvent event) {
@@ -67,6 +74,13 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		
 		// draw image and polygons
 		image.draw(g);
+		
+		// handle painter queue
+		Painter p;
+		while ((p = painterQueue.poll()) != null)
+		{
+			p.draw(g);
+		}
 		
 		// draw menu
 		menu.draw(g);
@@ -101,6 +115,12 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		
 	}
 
+	public void repaint(Painter p)
+	{
+		painterQueue.add(p);
+		repaint();
+	}
+	
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -135,6 +155,8 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		{
 		case MouseEvent.BUTTON3:
 			
+			boolean showFeedback = false;
+			
 			if (menu.showing())
 			{
 				
@@ -145,28 +167,30 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 				case 0:
 					break;
 				case 1:
-					if (polman.editHighlighted())
+					if (!polman.editHighlighted())
 					{
-						repaint();
+						showFeedback = true;
 					}
 					break;
 				case 3:
-					polman.finishPolygon();
-					repaint();
+					if (!polman.finishPolygon())
+					{
+						showFeedback = true;
+					}
 					break;
 				case 7:
 					if (polman.openPolygon())
 					{
-						if (polman.removeLastPoint())
+						if (!polman.removeLastPoint())
 						{
-							repaint();
+							showFeedback = true;
 						}
 					}
 					else
 					{
-						if (polman.removeHighlighted())
+						if (!polman.removeHighlighted())
 						{
-							repaint();
+							showFeedback = true;
 						}
 					}
 					break;
@@ -184,6 +208,11 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 				catch (Exception e)
 				{
 					
+				}
+				
+				if (showFeedback)
+				{
+					feedback.reset(menu.getPosition());
 				}
 
 				repaint();

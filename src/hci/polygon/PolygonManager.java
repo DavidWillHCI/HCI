@@ -20,21 +20,23 @@ public class PolygonManager {
 		
 	}
 	
-	public void finishPolygon()
+	public boolean finishPolygon()
 	{
 		
 		if (polygons.size() == 0)
-			return;
+			return false;
 		
 		TaggedPolygon p = polygons.get(polygons.size() - 1);
 		
 		if (p.size() < 3)
 		{
 			polygons.remove(polygons.size() - 1);
-			return;
+			return false;
 		}
 		
 		p.complete();
+		
+		return true;
 		
 	}
 	
