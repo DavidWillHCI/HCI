@@ -88,6 +88,7 @@ public class TaggedImage {
 				g2d.setComposite(c);
 				g.setColor(Color.black);
 				g.drawString("The Label", topLeftX, topLeftY);
+				g.setColor(Color.GREEN);
 				//
 			}
 			else
