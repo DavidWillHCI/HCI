@@ -3,6 +3,8 @@ package hci.menu;
 import java.awt.*;
 import java.io.*;
 
+import javax.swing.JTextField;
+
 import hci.menu.icon.*;
 import hci.util.Point;
 
@@ -150,6 +152,8 @@ public class RadialMenu {
 			if (angle > -45 && angle < 45)
 			{
 				state = 3;
+			
+				
 			}
 			else if (angle > 135 || angle < -135)
 			{

@@ -102,6 +102,7 @@ public class TaggedImage {
 		if (polygon.isEditing() && polygon.isComplete())
 		{
 			g.drawLine(lastPoint.getX(), lastPoint.getY(), points[0].getX(), points[0].getY());
+			
 		}
 		
 	}

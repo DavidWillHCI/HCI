@@ -5,12 +5,13 @@ import hci.util.Point;
 import hci.menu.*;
 
 import javax.swing.*;
+
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-public class Viewer extends JPanel implements MouseListener, MouseMotionListener {
+public class Viewer extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
 	
 	private static final String TITLE = "HCI VIEWER";
 	
@@ -26,6 +27,8 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 	private PolygonManager polman;
 	
 	private RadialMenu menu;
+	
+	private LabelBox labelbox;
 	
 	public Viewer(int w, int h, String file) throws IOException, FileNotFoundException
 	{
@@ -55,10 +58,15 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		  	}
 		});
 		
+		labelbox = new LabelBox(this);
+		labelbox.setVisible(false);
+		
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
 		container.setVisible(true);
+		
+		
 		
 	}
 	
@@ -215,10 +223,17 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		
 			if (polman.updateHighlights(new Point(me.getX(), me.getY())))
 			{
+				
 				repaint();
 			}
 			
 		}
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 	

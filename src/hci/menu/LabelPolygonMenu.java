@@ -1,5 +1,12 @@
 package hci.menu;
 
-public class LabelPolygonMenu {
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
+public class LabelPolygonMenu {
+	
+	private JTextField textField;
+	
+	
+	
 }
