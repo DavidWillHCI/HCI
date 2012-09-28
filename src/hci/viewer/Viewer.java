@@ -94,21 +94,24 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		{
 		case MouseEvent.BUTTON1:
 			
-			if (!menu.showing())
+			if (!polman.isEditing())
 			{
-				polman.addNewPoint(new Point(me.getX(), me.getY()));
-				repaint();
-			}
-			
-			// unhighlight all polygons
-			if (polman.openPolygon())
-			{
-				
-				if (polman.removeHighlights())
+				if (!menu.showing())
 				{
+					polman.addNewPoint(new Point(me.getX(), me.getY()));
 					repaint();
 				}
 				
+				// unhighlight all polygons
+				if (polman.openPolygon())
+				{
+					
+					if (polman.removeHighlights())
+					{
+						repaint();
+					}
+					
+				}
 			}
 			
 		}
@@ -136,14 +139,27 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent me) {
 		
+		
 		switch (me.getButton())
 		{
+		case MouseEvent.BUTTON1:
+			
+			if (polman.isEditing())
+			{
+				
+				polman.highlightPoint(new Point(me.getX(),me.getY()));
+				repaint();
+				
+			}
+			
+			break;
 		case MouseEvent.BUTTON3:
 			menu.show(new Point(me.getX(), me.getY()));
 			setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
 		            new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new java.awt.Point(0, 0),
 		           "null"));
 			repaint();
+			break;
 		}
 		
 	}
@@ -153,6 +169,9 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 		
 		switch (me.getButton())
 		{
+		case MouseEvent.BUTTON1:
+			polman.resetPointHighlight();
+			break;
 		case MouseEvent.BUTTON3:
 			
 			boolean showFeedback = false;
@@ -179,14 +198,8 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 					}
 					break;
 				case 7:
-					if (polman.openPolygon())
-					{
-						if (!polman.removeLastPoint())
-						{
-							showFeedback = true;
-						}
-					}
-					else
+
+					if (!polman.openPolygon())
 					{
 						if (!polman.removeHighlighted())
 						{
@@ -232,6 +245,15 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 			{
 				repaint();
 			}
+		}
+		else
+		{
+			
+			if (polman.updatePoint(new Point(me.getX(), me.getY())))
+			{
+				repaint();
+			}
+			
 		}
 		
 	}
