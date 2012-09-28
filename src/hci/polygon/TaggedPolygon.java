@@ -15,6 +15,8 @@ public class TaggedPolygon extends Polygon {
 	private boolean complete = false;
 	private boolean highlighted = false;
 	
+	private int selectedPointIdx = -1;
+	
 	public int size()
 	{
 		return npoints;
@@ -23,6 +25,48 @@ public class TaggedPolygon extends Polygon {
 	public boolean isHighlighted()
 	{
 		return highlighted;
+	}
+	
+	private double euclidDistance(Point p1, Point p2)
+	{
+		return Math.sqrt(Math.pow(p1.getX() - p2.getX(),2) + Math.pow(p1.getY() - p2.getY(),2));
+	}
+	
+	public void selectPoint(Point p)
+	{
+		
+		// if p is close to point, select this point to move
+		for (int i = 0; i < npoints; i++)
+		{
+			if (euclidDistance(p,new Point(xpoints[i],ypoints[i])) < 10)
+			{
+				selectedPointIdx = i;
+				return;
+			}
+		}
+		
+		selectedPointIdx = -1;
+		
+	}
+	
+	public void clearSelectedPoint()
+	{
+		selectedPointIdx = -1;
+	}
+	
+	public void updateSelectedPoint(Point p)
+	{
+		if (selectedPointIdx != -1)
+		{
+			xpoints[selectedPointIdx] = p.getX();
+			ypoints[selectedPointIdx] = p.getY();
+			invalidate();
+		}
+	}
+	
+	public int getSelectedPointIdx()
+	{
+		return selectedPointIdx;
 	}
 	
 	public void addPoint(Point p)

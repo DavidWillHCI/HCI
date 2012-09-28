@@ -109,7 +109,9 @@ public class TaggedImage {
 		for (int i = 1; i < points.length; i++)
 		{
 			g.drawLine(lastPoint.getX(), lastPoint.getY(), points[i].getX(), points[i].getY());
+			
 			g.fillOval(points[i].getX()-(int)(POINT_SIZE / 2), points[i].getY()-(int)(POINT_SIZE / 2), POINT_SIZE, POINT_SIZE);
+
 			lastPoint = points[i];
 			System.out.println("Drawing: " + points[i].toString());
 		}
@@ -117,7 +119,14 @@ public class TaggedImage {
 		if (polygon.isEditing() && polygon.isComplete())
 		{
 			g.drawLine(lastPoint.getX(), lastPoint.getY(), points[0].getX(), points[0].getY());
-			
+		}
+		
+		if (polygon.getSelectedPointIdx() != -1)
+		{
+			int i = polygon.getSelectedPointIdx();
+			g.setColor(Color.RED);
+			g.fillOval(points[i].getX()-(int)(POINT_SIZE / 2), points[i].getY()-(int)(POINT_SIZE / 2), POINT_SIZE, POINT_SIZE);
+			g.setColor(Color.GREEN);
 		}
 		
 	}
