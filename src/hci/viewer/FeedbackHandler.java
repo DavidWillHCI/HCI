@@ -12,7 +12,7 @@ import javax.swing.*;
 public class FeedbackHandler implements ActionListener, Painter {
 	
 	private static final int FRAME_DRAW_TIME = 50;
-	private static final String ICON_FILE = "icons/Delete.png";
+	private static final String ICON_FILE = "icons/Reject.png";
 	
 	private Viewer parent;
 	private Timer timer;
