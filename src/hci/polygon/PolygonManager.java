@@ -20,6 +20,44 @@ public class PolygonManager {
 		
 	}
 	
+	public void highlightPoint(Point p)
+	{
+		
+		for (int i = 0; i < polygons.size(); i++)
+		{
+			if (polygons.get(i).isEditing())
+			{
+				polygons.get(i).selectPoint(p);
+			}
+		}
+		
+	}
+	
+	public void resetPointHighlight()
+	{
+		for (int i = 0; i < polygons.size(); i++)
+		{
+			polygons.get(i).clearSelectedPoint();
+		}
+	}
+	
+	public boolean updatePoint(Point p)
+	{
+		
+		// if highlighted point, update it
+		for (int i = 0; i < polygons.size(); i++)
+		{
+			if (polygons.get(i).getSelectedPointIdx() != -1)
+			{
+				polygons.get(i).updateSelectedPoint(p);
+				return true;
+			}
+		}
+		
+		return false;
+		
+	}
+	
 	public void finishPolygon()
 	{
 		
