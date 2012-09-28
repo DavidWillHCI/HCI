@@ -174,14 +174,7 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
 					repaint();
 					break;
 				case 7:
-					if (polman.openPolygon())
-					{
-						if (polman.removeLastPoint())
-						{
-							repaint();
-						}
-					}
-					else
+					if (!polman.openPolygon())
 					{
 						if (polman.removeHighlighted())
 						{

@@ -72,7 +72,11 @@ public class PolygonManager {
 			return;
 		}
 		
-		p.complete();
+		// finish all editing
+		for (int i = 0; i < polygons.size(); i++)
+		{
+			polygons.get(i).complete();
+		}
 		
 	}
 	
@@ -194,7 +198,15 @@ public class PolygonManager {
 			return false;
 		}
 		
-		return polygons.get(polygons.size()-1).isEditing();
+		for (int i = 0; i < polygons.size(); i++)
+		{
+			if (polygons.get(i).isEditing())
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public void addNewPoint(Point p)
