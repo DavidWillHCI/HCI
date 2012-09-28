@@ -28,6 +28,7 @@ public class RadialMenu {
 				new CompleteIcon(),
 				new EditIcon(),
 				new DeleteIcon(),
+				new MenuIcon()
 		};
 		
 		iconman = new IconManager(icons);
@@ -76,6 +77,9 @@ public class RadialMenu {
 		case 3:
 			g.fillOval(position.getX() - (int)(SIZE/2) + SIZE + 20 - BORDER, position.getY() - (int)(SIZE/2) - BORDER, SIZE + 2*BORDER, SIZE + 2*BORDER);
 			break;
+		case 5:
+			g.fillOval(position.getX() - (int)(SIZE/2) - BORDER, position.getY() + SIZE + 20 - (int)(SIZE/2) - BORDER, SIZE + 2*BORDER, SIZE + 2*BORDER);
+			break;
 		case 7:
 			g.fillOval(position.getX() - (int)(SIZE/2) - SIZE - 20 - BORDER, position.getY() - (int)(SIZE/2) - BORDER, SIZE + 2*BORDER, SIZE + 2*BORDER);
 			break;
@@ -92,6 +96,9 @@ public class RadialMenu {
 		// 3
 		g.fillOval(position.getX() - (int)(SIZE/2) - SIZE - 20, position.getY() - (int)(SIZE/2), SIZE, SIZE);
 		
+		// 5
+		g.fillOval(position.getX() - (int)(SIZE/2), position.getY() + SIZE + 20 - (int)(SIZE/2), SIZE, SIZE);
+		
 		// 7
 		g.fillOval(position.getX() - (int)(SIZE/2) + SIZE + 20, position.getY() - (int)(SIZE/2), SIZE, SIZE);
 		
@@ -107,6 +114,8 @@ public class RadialMenu {
 		// 7
 		g.drawImage(iconman.getIconByName("DeleteIcon").getImage(), position.getX() - (int)(SIZE/2) - SIZE - 10, position.getY() - (int)(SIZE/2) + 10, null);
 		
+		// 5
+		g.drawImage(iconman.getIconByName("MenuIcon").getImage(), position.getX() - (int)(SIZE/2) + 10, position.getY() + SIZE + 30 - (int)(SIZE/2), null);
 		
 		
 		g2d.setComposite(c);
@@ -155,6 +164,10 @@ public class RadialMenu {
 			else if (angle < -45 && angle > -135)
 			{
 				state = 1;
+			}
+			else if (angle > 45 && angle < 135)
+			{
+				state = 5;
 			}
 			else
 			{
