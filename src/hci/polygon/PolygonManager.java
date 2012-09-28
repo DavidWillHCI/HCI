@@ -124,10 +124,10 @@ public class PolygonManager {
 	public boolean removeHighlighted()
 	{
 		boolean repaint = false;
-		Iterator i = polygons.iterator();
+		Iterator<TaggedPolygon> i = polygons.iterator();
 		while (i.hasNext())
 		{
-			TaggedPolygon p = (TaggedPolygon) i.next();
+			TaggedPolygon p = i.next();
 			
 			if (p.isHighlighted())
 			{

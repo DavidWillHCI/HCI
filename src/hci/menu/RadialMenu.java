@@ -122,7 +122,6 @@ public class RadialMenu {
 	{
 		
 		// accept current menu item
-		System.out.println("Menu closed with state = " + state);
 		hide();
 		
 		return state;
@@ -141,8 +140,6 @@ public class RadialMenu {
 		
 		double angle = Math.toDegrees(Math.atan2(p.getY() - position.getY(), p.getX() - position.getX()));
 		double dist = Math.sqrt(Math.pow(p.getX() - position.getX(),2) + Math.pow(p.getY() - position.getY(),2));
-		
-		System.out.println("mouse angle: " + angle);
 		
 		if (dist > SIZE)
 		{
@@ -188,8 +185,6 @@ public class RadialMenu {
 			alphaMod = 0;
 			return true;
 		}
-		
-		System.out.println("euclid distance = " + (Math.sqrt(Math.pow(p.getX() - position.getX(),2) + Math.pow(p.getY() - position.getY(),2))));
 		
 		if (oldState == state)
 		{
