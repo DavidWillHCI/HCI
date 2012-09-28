@@ -63,7 +63,9 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 		labelbox = new LabelBox(this);
 		labelbox.setVisible(false);
-
+		
+		feedback = new FeedbackHandler(this);
+		
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
