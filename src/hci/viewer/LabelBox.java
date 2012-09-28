@@ -35,7 +35,6 @@ public class LabelBox extends JTextField implements ActionListener {
 		
 		setBounds(P.getX(), P.getY(), size.width, size.height);
 		
-		
 	}
 	
 	public void show(Point P){
@@ -45,7 +44,7 @@ public class LabelBox extends JTextField implements ActionListener {
 		
 	}
 	
-	public void hide(){
+	public void labelBoxHide(){
 		
 		setVisible(false);
 		

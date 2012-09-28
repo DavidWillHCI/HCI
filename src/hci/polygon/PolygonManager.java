@@ -46,6 +46,16 @@ public class PolygonManager {
 		}
 	}
 	
+	/**
+	 * Loop through all polygons. If you find one that returns isshighlighted true otherwise return null
+	 * @return
+	 
+	public TaggedPolygon getHighlighted(){
+		
+		
+		
+	}*/
+	
 	public boolean updateHighlights(Point p)
 	{
 		

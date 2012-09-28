@@ -73,7 +73,22 @@ public class TaggedImage {
 				int type = AlphaComposite.SRC_OVER;
 				g2d.setComposite(AlphaComposite.getInstance(type, 0.4f));
 				g.fillPolygon(polygon);
+
 				g2d.setComposite(c);
+								
+				//
+				c = g2d.getComposite();
+				g2d.setComposite(AlphaComposite.getInstance(type, 0.8f));
+				
+				g.setColor(Color.white);
+				Rectangle boundingbox = polygon.getBounds();
+				int topLeftX = ((boundingbox.x + (boundingbox.width + boundingbox.x)) / 2) - 25;
+				int topLeftY = (boundingbox.y + (boundingbox.y + boundingbox.height)) / 2 ;
+				g.fillRect(topLeftX, topLeftY - 10, 75, 12);
+				g2d.setComposite(c);
+				g.setColor(Color.black);
+				g.drawString("The Label", topLeftX, topLeftY);
+				//
 			}
 			else
 			{
