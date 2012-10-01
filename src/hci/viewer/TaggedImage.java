@@ -102,7 +102,7 @@ public class TaggedImage {
 			}
 			catch (NullPointerException e){
 				
-				
+				g.fillRect(middleX - "Please Tag Me".length() * 4, middleY - 15, "Please Tag Me".length() * 10, 20);
 				
 			}
 				g2d.setComposite(c);
