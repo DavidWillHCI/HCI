@@ -14,9 +14,19 @@ public class TaggedPolygon extends Polygon {
 	private boolean editing = false;
 	private boolean complete = false;
 	private boolean highlighted = false;
+	private String nameOfPolygon;
 	
 	private int selectedPointIdx = -1;
 	
+	
+	public String getNameOfPolygon() {
+		return nameOfPolygon;
+	}
+
+	public void setNameOfPolygon(String nameOfPolygon) {
+		this.nameOfPolygon = nameOfPolygon;
+	}
+
 	public int size()
 	{
 		return npoints;

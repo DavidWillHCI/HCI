@@ -76,9 +76,18 @@ public class TaggedImage {
 
 				g2d.setComposite(c);
 								
-				// This will be set to the stored user created label for this polygon
-				String polygonLabel = "PlaceHolder";
+				// Need to get the name of the polygon being moused over
 				
+				String polygonLabel = "";
+				
+				try{
+				polygonLabel = polman.getHighlighted().getNameOfPolygon();
+				}
+				catch (NullPointerException e){
+				
+					polygonLabel = "Please Tag Me";
+					
+				}
 				c = g2d.getComposite();
 				g2d.setComposite(AlphaComposite.getInstance(type, 1f));
 				
@@ -87,14 +96,26 @@ public class TaggedImage {
 				int middleX = ((boundingbox.x + (boundingbox.width + boundingbox.x)) / 2);
 				int middleY = (boundingbox.y + (boundingbox.y + boundingbox.height)) / 2;
 				
-				// Multiply offset by 6 as a scaling factor to make the box and string label match
+				// Multiply offset as a scaling factor to make the box and string label match
+			try {
 				g.fillRect(middleX - polygonLabel.length() * 4, middleY - 15, polygonLabel.length() * 10, 20);
+			}
+			catch (NullPointerException e){
+				
+				
+				
+			}
 				g2d.setComposite(c);
 				g.setColor(Color.BLACK);
 				Font currentFont = g.getFont();
 				Font labelFont = new Font("newFont", Font.BOLD, 15);
 				g.setFont(labelFont);
+				try{
 				g.drawString(polygonLabel, middleX - polygonLabel.length() * 3, middleY);
+				}
+				catch(NullPointerException e){
+					g.drawString("Please Tag Me", middleX - "Please Tag Me".length() * 3, middleY);
+				}
 				g.setColor(Color.GREEN);
 				g.setFont(currentFont);
 				//

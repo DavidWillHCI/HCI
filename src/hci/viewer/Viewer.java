@@ -61,9 +61,12 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			}
 		});
 
-		labelbox = new LabelBox(this);
-		labelbox.setVisible(false);
 		
+		labelbox = new LabelBox(this);
+		this.add(labelbox);
+		
+		labelbox.setVisible(false);
+			
 		feedback = new FeedbackHandler(this);
 		
 		addMouseListener(this);
@@ -190,14 +193,34 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				case 0:
 					break;
 				case 1:
+					
+					System.out.println("Entered edit mode");
+					labelbox.setVisible(true);
+					
+					java.awt.Point point = me.getLocationOnScreen();
+					Point myPoint = new Point(point.x, point.y);
+					labelbox.setPosition(myPoint);
+					
+					
+					repaint();
+					
 					if (polman.isEditing() || !polman.editHighlighted())
 					{
 						showFeedback = true;
 					}
 					break;
 				case 3:
+					
+					if (labelbox.isVisible()){
+						
+					polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
+					labelbox.setVisible(false);
+						
+					}
+					
 					if (polman.openPolygon())
 					{
+						labelbox.setVisible(false);
 						if (!polman.finishPolygon())
 						{
 							showFeedback = true;

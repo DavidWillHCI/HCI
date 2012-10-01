@@ -20,6 +20,22 @@ public class PolygonManager {
 		
 	}
 	
+	public TaggedPolygon getHighlighted(){
+		
+		for (int i = 0; i < polygons.size(); i++) {
+			
+			if (polygons.get(i).isHighlighted()){
+				
+				return polygons.get(i);
+				
+			}
+			
+		}
+		
+		return null;
+		
+	}
+	
 	public void highlightPoint(Point p)
 	{
 		
@@ -181,6 +197,27 @@ public class PolygonManager {
 		}
 		
 		return repaint;
+	}
+	
+	/**
+	 * Finds out which Polygon is currently being edited
+	 * @return the taggedPolygon being edited
+	 */
+	public TaggedPolygon currentlyEditedPolygon(){
+		
+		for (int i = 0; i < polygons.size(); i++) {
+			
+			if (polygons.get(i).isEditing()){
+				
+				return polygons.get(i);
+				
+			}
+			
+		}
+		
+		//TODO
+		return null;
+		
 	}
 	
 	public boolean openPolygon()
