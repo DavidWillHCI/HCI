@@ -76,19 +76,27 @@ public class TaggedImage {
 
 				g2d.setComposite(c);
 								
-				//
+				// This will be set to the stored user created label for this polygon
+				String polygonLabel = "PlaceHolder";
+				
 				c = g2d.getComposite();
-				g2d.setComposite(AlphaComposite.getInstance(type, 0.8f));
+				g2d.setComposite(AlphaComposite.getInstance(type, 1f));
 				
 				g.setColor(Color.white);
 				Rectangle boundingbox = polygon.getBounds();
-				int topLeftX = ((boundingbox.x + (boundingbox.width + boundingbox.x)) / 2) - 25;
-				int topLeftY = (boundingbox.y + (boundingbox.y + boundingbox.height)) / 2 ;
-				g.fillRect(topLeftX, topLeftY - 10, 75, 12);
+				int middleX = ((boundingbox.x + (boundingbox.width + boundingbox.x)) / 2);
+				int middleY = (boundingbox.y + (boundingbox.y + boundingbox.height)) / 2;
+				
+				// Multiply offset by 6 as a scaling factor to make the box and string label match
+				g.fillRect(middleX - polygonLabel.length() * 4, middleY - 15, polygonLabel.length() * 10, 20);
 				g2d.setComposite(c);
-				g.setColor(Color.black);
-				g.drawString("The Label", topLeftX, topLeftY);
+				g.setColor(Color.BLACK);
+				Font currentFont = g.getFont();
+				Font labelFont = new Font("newFont", Font.BOLD, 15);
+				g.setFont(labelFont);
+				g.drawString(polygonLabel, middleX - polygonLabel.length() * 3, middleY);
 				g.setColor(Color.GREEN);
+				g.setFont(currentFont);
 				//
 			}
 			else
