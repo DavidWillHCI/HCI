@@ -26,7 +26,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	
 	private PolygonManager polman;
 	
-	private RadialMenu menu;
+	private RadialMenu contextMenu;
+	private MainMenu mainMenu;
 	
 	private Queue<Painter> painterQueue = new LinkedList<Painter>();
 	
@@ -46,7 +47,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 		image = new TaggedImage(w, h, file, polman);
 
-		menu = new RadialMenu();
+		contextMenu = new RadialMenu();
+		mainMenu = new MainMenu();
 
 		container.setResizable(false);
 
@@ -69,6 +71,9 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
+		addMouseListener(mainMenu);
+		addMouseMotionListener(mainMenu);
+		
 		container.setVisible(true);
 
 	}
@@ -87,12 +92,24 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		}
 		
 		// draw menu
-		menu.draw(g);
+		if (mainMenu.showing())
+		{
+			mainMenu.draw(g, getWidth(), getHeight());
+		}
+		else
+		{
+			contextMenu.draw(g);
+		}
 		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent me) {
+		
+		if (mainMenu.showing())
+		{
+			return;
+		}
 		
 		switch (me.getButton())
 		{
@@ -100,7 +117,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			
 			if (!polman.isEditing())
 			{
-				if (!menu.showing())
+				if (!contextMenu.showing())
 				{
 					polman.addNewPoint(new Point(me.getX(), me.getY()));
 					repaint();
@@ -131,7 +148,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+				
 	}
 
 	@Override
@@ -143,6 +160,10 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	@Override
 	public void mousePressed(MouseEvent me) {
 		
+		if (mainMenu.showing())
+		{
+			return;
+		}
 		
 		switch (me.getButton())
 		{
@@ -158,7 +179,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			
 			break;
 		case MouseEvent.BUTTON3:
-			menu.show(new Point(me.getX(), me.getY()));
+			contextMenu.show(new Point(me.getX(), me.getY()));
 			setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
 		            new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new java.awt.Point(0, 0),
 		           "null"));
@@ -171,6 +192,11 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	@Override
 	public void mouseReleased(MouseEvent me) {
 		
+		if (mainMenu.showing())
+		{
+			return;
+		}
+		
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON1:
@@ -180,10 +206,10 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			
 			boolean showFeedback = false;
 			
-			if (menu.showing())
+			if (contextMenu.showing())
 			{
 				
-				int state = menu.close();
+				int state = contextMenu.close();
 					
 				switch (state)
 				{
@@ -249,7 +275,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				{
 					
 					Robot r = new Robot();
-					r.mouseMove((int)(menu.getPosition().getX() + this.getLocationOnScreen().getX()), (int)(menu.getPosition().getY() + this.getLocationOnScreen().getY()));
+					r.mouseMove((int)(contextMenu.getPosition().getX() + this.getLocationOnScreen().getX()), (int)(contextMenu.getPosition().getY() + this.getLocationOnScreen().getY()));
 					
 				}
 				catch (Exception e)
@@ -259,7 +285,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				
 				if (showFeedback)
 				{
-					feedback.reset(menu.getPosition());
+					feedback.reset(contextMenu.getPosition());
 				}
 
 				repaint();
@@ -273,9 +299,14 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	@Override
 	public void mouseDragged(MouseEvent me) {
 		
-		if (menu.showing())
+		if (mainMenu.showing())
 		{
-			if (menu.updateMousePosition(new Point(me.getX(), me.getY())))
+			return;
+		}
+		
+		if (contextMenu.showing())
+		{
+			if (contextMenu.updateMousePosition(new Point(me.getX(), me.getY())))
 			{
 				repaint();
 			}
@@ -294,6 +325,11 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 	@Override
 	public void mouseMoved(MouseEvent me) {
+		
+		if (mainMenu.showing())
+		{
+			return;
+		}
 		
 		if (!polman.openPolygon())
 		{
