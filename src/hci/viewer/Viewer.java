@@ -12,24 +12,24 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 
 public class Viewer extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
-	
+
 	private static final String TITLE = "HCI VIEWER";
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private TaggedImage image;
-	
+
 	private JFrame container;
-	
+
 	private PolygonManager polman;
-	
+
 	private RadialMenu menu;
-	
+
 	private Queue<Painter> painterQueue = new LinkedList<Painter>();
-	
+
 	private FeedbackHandler feedback;
 	private LabelBox labelbox;
 
@@ -50,6 +50,39 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 		container.setResizable(false);
 
+		labelbox = new LabelBox(this);
+		this.add(labelbox);
+
+		labelbox.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent Ke) {
+				if (Ke.VK_ENTER == Ke.getKeyCode() && labelbox.isVisible()) {
+
+					try{
+
+						polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
+						labelbox.setVisible(false);
+						polman.finishPolygon();
+						repaint();
+					}
+					catch(NullPointerException e){}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 		container.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent event) {
 
@@ -61,46 +94,45 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			}
 		});
 
-		
-		labelbox = new LabelBox(this);
-		this.add(labelbox);
-		
+
+
+
 		labelbox.setVisible(false);
-			
+
 		feedback = new FeedbackHandler(this);
-		
+
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
 		container.setVisible(true);
 
 	}
-	
+
 	public void paintComponent(Graphics g)
 	{
-		
+
 		// draw image and polygons
 		image.draw(g);
-		
+
 		// handle painter queue
 		Painter p;
 		while ((p = painterQueue.poll()) != null)
 		{
 			p.draw(g);
 		}
-		
+
 		// draw menu
 		menu.draw(g);
-		
+
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent me) {
-		
+
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON1:
-			
+
 			if (!polman.isEditing())
 			{
 				if (!menu.showing())
@@ -108,21 +140,21 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					polman.addNewPoint(new Point(me.getX(), me.getY()));
 					repaint();
 				}
-				
+
 				// unhighlight all polygons
 				if (polman.openPolygon())
 				{
-					
+
 					if (polman.removeHighlights())
 					{
 						repaint();
 					}
-					
+
 				}
 			}
-			
+
 		}
-		
+
 	}
 
 	public void repaint(Painter p)
@@ -130,84 +162,85 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		painterQueue.add(p);
 		repaint();
 	}
-	
+
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent me) {
-		
-		
+
+
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON1:
-			
+
 			if (polman.isEditing())
 			{
-				
+
 				polman.highlightPoint(new Point(me.getX(),me.getY()));
 				repaint();
-				
+
 			}
-			
+
 			break;
 		case MouseEvent.BUTTON3:
 			menu.show(new Point(me.getX(), me.getY()));
 			setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
-		            new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new java.awt.Point(0, 0),
-		           "null"));
+					new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new java.awt.Point(0, 0),
+					"null"));
 			repaint();
 			break;
 		}
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent me) {
-		
+
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON1:
 			polman.resetPointHighlight();
 			break;
 		case MouseEvent.BUTTON3:
-			
+
 			boolean showFeedback = false;
-			
+
 			if (menu.showing())
 			{
-				
+
 				int state = menu.close();
-					
+
 				switch (state)
 				{
 				case 0:
 					break;
 				case 1:
-					
-					System.out.println("Entered edit mode");
-					
-					if(polman.getHighlighted() != null){
-					labelbox.setVisible(true);
 
-					Point point = menu.getPosition();
-					
-				//	java.awt.Point point = me.getLocationOnScreen();
-					Point myPoint = new Point(point.getX(), point.getY());
-					labelbox.setPosition(myPoint);
-					
+					System.out.println("Entered edit mode");
+
+					if(polman.getHighlighted() != null){
+						labelbox.setVisible(true);
+
+						Point point = menu.getPosition();
+
+						Point myPoint = new Point(point.getX(), point.getY());
+						labelbox.setPosition(myPoint);
+						labelbox.requestFocus();
 					}
+
+
 					repaint();
-					
+
 					if (polman.isEditing() || !polman.editHighlighted())
 					{
 						showFeedback = true;
@@ -215,24 +248,34 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					}
 					break;
 				case 3:
-					
+
 					if (labelbox.isVisible()){
-						
-					try{
-						polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
+
+
+						try{
+
+							polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
+
+						}
+						catch(NullPointerException e){}
+
+						labelbox.setVisible(false);
+
 					}
-					catch(NullPointerException e){
-						
-						
-						
-					}
-					labelbox.setVisible(false);
-						
-					}
-					
+
+
+
 					if (polman.openPolygon())
 					{
+
 						labelbox.setVisible(false);
+						Point point = menu.getPosition();
+
+						Point myPoint = new Point(point.getX(), point.getY());
+						labelbox.setPosition(myPoint);
+
+
+
 						if (!polman.finishPolygon())
 						{
 							showFeedback = true;
@@ -244,7 +287,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					}
 					break;
 				case 7:
-					
+
 					if (!polman.isEditing())
 					{
 						if (polman.openPolygon())
@@ -274,24 +317,24 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					{
 						showFeedback = true;
 					}
-					
+
 					break;
 				}
-				
+
 				// attempt to move the mouse back to where it was 
 				// this should probably be adapted to put the mouse to a more meaningful position
 				try
 				{
-					
+
 					Robot r = new Robot();
 					r.mouseMove((int)(menu.getPosition().getX() + this.getLocationOnScreen().getX()), (int)(menu.getPosition().getY() + this.getLocationOnScreen().getY()));
-					
+
 				}
 				catch (Exception e)
 				{
-					
+
 				}
-				
+
 				if (showFeedback)
 				{
 					feedback.reset(menu.getPosition());
@@ -299,15 +342,15 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 				repaint();
 			}
-			
+
 			setCursor(Cursor.getDefaultCursor());
 		}
-		
+
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent me) {
-		
+
 		if (menu.showing())
 		{
 			if (menu.updateMousePosition(new Point(me.getX(), me.getY())))
@@ -317,31 +360,31 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		}
 		else
 		{
-			
+
 			if (polman.updatePoint(new Point(me.getX(), me.getY())))
 			{
 				repaint();
 			}
-			
+
 		}
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent me) {
-		
+
 		if (!polman.openPolygon())
 		{
-		
+
 			if (polman.updateHighlights(new Point(me.getX(), me.getY())))
 			{
 				repaint();
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
