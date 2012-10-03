@@ -198,9 +198,11 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					
 					if(polman.getHighlighted() != null){
 					labelbox.setVisible(true);
+
+					Point point = menu.getPosition();
 					
-					java.awt.Point point = me.getLocationOnScreen();
-					Point myPoint = new Point(point.x, point.y);
+				//	java.awt.Point point = me.getLocationOnScreen();
+					Point myPoint = new Point(point.getX(), point.getY());
 					labelbox.setPosition(myPoint);
 					
 					}
@@ -209,6 +211,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					if (polman.isEditing() || !polman.editHighlighted())
 					{
 						showFeedback = true;
+						labelbox.setVisible(false);
 					}
 					break;
 				case 3:
