@@ -4,6 +4,7 @@ import hci.polygon.*;
 import hci.util.Point;
 import hci.menu.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.*;
 import java.awt.*;
@@ -61,6 +62,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 			}
 
+
+
 			@Override
 			public void keyReleased(KeyEvent Ke) {
 				if (Ke.VK_ENTER == Ke.getKeyCode() && labelbox.isVisible()) {
@@ -73,6 +76,18 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						repaint();
 					}
 					catch(NullPointerException e){}
+				}
+
+				// This is just for testing the file saving. It wont be tied to a keypress in the final version
+				if (Ke.VK_S == Ke.getKeyCode()) {
+
+					try {
+						image.saveImage();
+						System.out.println("Trying to save image");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 

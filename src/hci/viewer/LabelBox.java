@@ -25,7 +25,6 @@ public class LabelBox extends JTextField implements ActionListener {
 		setVisible(true);
 		parent.add(this);
 		size = getPreferredSize();
-		System.out.println("Added the TXT field to the panel");
 		repaint();
 		
 	}
