@@ -54,7 +54,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		labelbox = new LabelBox(this);
 		this.add(labelbox);
 
-		labelbox.addKeyListener(new KeyListener() {
+		container.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -89,6 +89,32 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						e.printStackTrace();
 					}
 				}
+
+				// For testing saving the polygon map
+				if (Ke.VK_P == Ke.getKeyCode()) {
+
+					try {
+						FileOutputStream fout = new FileOutputStream("thePolygonMap.dat");
+						ObjectOutputStream oos = new ObjectOutputStream(fout);
+						oos.writeObject(polman.getPolygonsArrayList());
+						oos.close();
+						System.out.println("Serialized");
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+
+				if (Ke.VK_L == Ke.getKeyCode()){
+					
+					polman.loadPolygons();
+					repaint();
+
+
+				}
+
+
 			}
 
 			@Override

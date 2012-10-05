@@ -2,15 +2,39 @@ package hci.polygon;
 
 import hci.util.Point;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.*;
 
 public class PolygonManager {
 	
 	private ArrayList<TaggedPolygon> polygons = new ArrayList<TaggedPolygon>();
 	
-	public void loadPolygons(int hash)
-	{
+	
+	public ArrayList<TaggedPolygon> getPolygonsArrayList(){
 		
+		return polygons;
+		
+	}
+	public void loadPolygons()
+	{
+		try {
+			FileInputStream fin = new FileInputStream("thePolygonMap.dat");
+			ObjectInputStream ois = new ObjectInputStream(fin);
+
+			// The left hand side of this assignment should instead create the polygon i think
+			ArrayList<TaggedPolygon> savedPolygons = new ArrayList<TaggedPolygon>();
+			savedPolygons = (ArrayList<TaggedPolygon>) ois.readObject();
+			for (int i = 0; i < savedPolygons.size(); i++){
+			polygons.add(savedPolygons.get(i));
+			}
+			System.out.println("Trying to unserialize");
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 		
 	}

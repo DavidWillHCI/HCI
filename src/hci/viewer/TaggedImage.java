@@ -26,7 +26,7 @@ public class TaggedImage {
 		setImageSize(w,h);
 
 		// load the polgyons by image hash
-		polman.loadPolygons(originalImage.hashCode());
+//		polman.loadPolygons(originalImage.hashCode());
 
 		this.polman = polman;
 	}

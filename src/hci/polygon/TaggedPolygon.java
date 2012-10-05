@@ -11,6 +11,8 @@ public class TaggedPolygon extends Polygon {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+
+
 	private boolean editing = false;
 	private boolean complete = false;
 	private boolean highlighted = false;
@@ -62,6 +64,10 @@ public class TaggedPolygon extends Polygon {
 	public void clearSelectedPoint()
 	{
 		selectedPointIdx = -1;
+	}
+	
+	public void setHighlighted(boolean highlighted) {
+		this.highlighted = highlighted;
 	}
 	
 	public void updateSelectedPoint(Point p)
