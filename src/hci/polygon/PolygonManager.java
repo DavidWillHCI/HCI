@@ -17,10 +17,10 @@ public class PolygonManager {
 		return polygons;
 		
 	}
-	public void loadPolygons()
+	public void loadPolygons(String file)
 	{
 		try {
-			FileInputStream fin = new FileInputStream("thePolygonMap.dat");
+			FileInputStream fin = new FileInputStream(file);
 			ObjectInputStream ois = new ObjectInputStream(fin);
 
 			// The left hand side of this assignment should instead create the polygon i think

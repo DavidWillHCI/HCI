@@ -81,12 +81,18 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				// This is just for testing the file saving. It wont be tied to a keypress in the final version
 				if (Ke.VK_S == Ke.getKeyCode()) {
 
-					try {
-						image.saveImage();
-						System.out.println("Trying to save image");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					final JFileChooser fc = new JFileChooser();
+					int returnVal = fc.showSaveDialog(container);
+
+
+					if (returnVal == JFileChooser.APPROVE_OPTION){
+						String fileToSave = fc.getSelectedFile().getAbsolutePath();
+						try {
+							image.saveImage(fileToSave);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
 					}
 				}
 
@@ -94,11 +100,18 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				if (Ke.VK_P == Ke.getKeyCode()) {
 
 					try {
-						FileOutputStream fout = new FileOutputStream("thePolygonMap.dat");
-						ObjectOutputStream oos = new ObjectOutputStream(fout);
-						oos.writeObject(polman.getPolygonsArrayList());
-						oos.close();
-						System.out.println("Serialized");
+						final JFileChooser fc = new JFileChooser();
+						int returnVal = fc.showSaveDialog(container);
+
+						if (returnVal == JFileChooser.APPROVE_OPTION){
+							String fileToSave = fc.getSelectedFile().getAbsolutePath();
+							FileOutputStream fout = new FileOutputStream(fileToSave);
+							ObjectOutputStream oos = new ObjectOutputStream(fout);
+							oos.writeObject(polman.getPolygonsArrayList());
+							oos.close();
+						}
+						
+						
 
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -107,9 +120,16 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				}
 
 				if (Ke.VK_L == Ke.getKeyCode()){
+
+					final JFileChooser fc = new JFileChooser();
+					int returnVal = fc.showOpenDialog(container);
+
+					if (returnVal == JFileChooser.APPROVE_OPTION){
+						String polygonsToLoad = fc.getSelectedFile().getAbsolutePath();
+						polman.loadPolygons(polygonsToLoad);
+						repaint();	
+					}
 					
-					polman.loadPolygons();
-					repaint();
 
 
 				}

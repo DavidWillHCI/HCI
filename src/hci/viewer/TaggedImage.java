@@ -168,12 +168,12 @@ public class TaggedImage {
 	 * Saves this taggedImage to a file with the same name as what was loaded and in the same place
 	 * @throws IOException 
 	 */
-	public void saveImage() throws IOException{
+	public void saveImage(String pathToSave) throws IOException{
 
 		String path = filePath;
 		BufferedImage src = ImageIO.read(new File(path));
 		BufferedImage image = toBufferedImage(src);
-		save(image, "jpg", path);
+		save(image, "jpg", pathToSave);
 
 
 	}
