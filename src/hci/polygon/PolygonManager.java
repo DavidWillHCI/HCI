@@ -98,6 +98,13 @@ public class PolygonManager {
 		
 	}
 	
+	public TaggedPolygon getNewPolygon(){
+		
+		TaggedPolygon p = polygons.get(polygons.size() - 1);
+		return p;
+		
+	}
+	
 	public boolean finishPolygon()
 	{
 		

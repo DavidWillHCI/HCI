@@ -54,7 +54,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		labelbox = new LabelBox(this);
 		this.add(labelbox);
 
-		container.addKeyListener(new KeyListener() {
+		labelbox.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -62,28 +62,52 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 			}
 
-
-
 			@Override
 			public void keyReleased(KeyEvent Ke) {
 				if (Ke.VK_ENTER == Ke.getKeyCode() && labelbox.isVisible()) {
 
 					try{
 
-						polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
+						polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox()); // Null pointer because on initial polygon creation it is not being "edited"
 						labelbox.setVisible(false);
 						polman.finishPolygon();
 						repaint();
 					}
 					catch(NullPointerException e){}
+					try{
+
+						polman.getNewPolygon().setNameOfPolygon(labelbox.editLabelBox());
+						labelbox.setVisible(false);
+						polman.finishPolygon();
+						repaint();
+					}
+					catch(NullPointerException n){}
 				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		// The keylistener should only be on the labelbox in the final design
+		container.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {}
+
+
+
+			@Override
+			public void keyReleased(KeyEvent Ke) {
 
 				// This is just for testing the file saving. It wont be tied to a keypress in the final version
 				if (Ke.VK_S == Ke.getKeyCode()) {
 
 					final JFileChooser fc = new JFileChooser();
 					int returnVal = fc.showSaveDialog(container);
-
 
 					if (returnVal == JFileChooser.APPROVE_OPTION){
 						String fileToSave = fc.getSelectedFile().getAbsolutePath();
@@ -92,7 +116,6 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-
 					}
 				}
 
@@ -110,15 +133,12 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 							oos.writeObject(polman.getPolygonsArrayList());
 							oos.close();
 						}
-						
-						
-
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
 				}
 
+				// Testing loading the polygon map
 				if (Ke.VK_L == Ke.getKeyCode()){
 
 					final JFileChooser fc = new JFileChooser();
@@ -129,19 +149,11 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						polman.loadPolygons(polygonsToLoad);
 						repaint();	
 					}
-					
-
-
 				}
-
-
 			}
 
 			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
+			public void keyPressed(KeyEvent e) {}
 		});
 
 		container.addWindowListener(new WindowAdapter() {
@@ -154,9 +166,6 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 			}
 		});
-
-
-
 
 		labelbox.setVisible(false);
 
@@ -293,12 +302,11 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						labelbox.setVisible(true);
 
 						Point point = menu.getPosition();
-
 						Point myPoint = new Point(point.getX(), point.getY());
+
 						labelbox.setPosition(myPoint);
 						labelbox.requestFocus();
 					}
-
 
 					repaint();
 
@@ -312,11 +320,9 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 					if (labelbox.isVisible()){
 
-
 						try{
-
 							polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
-
+							polman.finishPolygon();
 						}
 						catch(NullPointerException e){}
 
@@ -324,16 +330,16 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 					}
 
-
-
-					if (polman.openPolygon())
+					else if (polman.openPolygon())
 					{
 
-						labelbox.setVisible(false);
+						labelbox.setVisible(true);
 						Point point = menu.getPosition();
 
 						Point myPoint = new Point(point.getX(), point.getY());
 						labelbox.setPosition(myPoint);
+						labelbox.requestFocus();
+
 
 
 
