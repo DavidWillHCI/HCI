@@ -35,7 +35,7 @@ public class RadialMenu {
 		this.containerWidth = containerWidth;
 		this.containerHeight = containerHeight;
 		
-		iconman = new IconManager(icons);
+		iconman = new IconManager(icons,50,50);
 	}
 	
 	public void show(Point p)
