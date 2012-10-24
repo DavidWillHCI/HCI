@@ -9,8 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-import javax.swing.*;
-
 public class MainMenu implements MouseListener, MouseMotionListener {
 
 	private static final int MENU_SIZE = 200;
@@ -23,11 +21,11 @@ public class MainMenu implements MouseListener, MouseMotionListener {
 	private IconManager iconman;
 	private DialogHandler dialog;
 	
-	public MainMenu(Viewer parent) throws FileNotFoundException, IOException
+	public MainMenu(Viewer parent, DialogHandler dh) throws FileNotFoundException, IOException
 	{
 		this.parent = parent;
 		
-		dialog = new DialogHandler(parent);
+		dialog = dh;
 		
 		// load icons
 		Icon[] icons = {
@@ -200,12 +198,11 @@ public class MainMenu implements MouseListener, MouseMotionListener {
 			}
 			break;
 		case TUTORIAL:
+			parent.startTutorial();
+			parent.hideMainMenu();
 			break;
 		case EXIT:
-			
-			// TODO: ask user to save?
-			
-			System.exit(0);
+			parent.quit();
 			break;
 		case MENU:
 			break;

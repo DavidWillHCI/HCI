@@ -1,8 +1,10 @@
 package hci.viewer;
 
 import hci.polygon.*;
+import hci.tutorial.*;
 import hci.util.Point;
 import hci.menu.*;
+import hci.menu.filedialog.DialogHandler;
 
 import javax.swing.*;
 import java.io.*;
@@ -35,6 +37,10 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	private LabelBox labelbox;
 	
 	private int width, height;
+	
+	private DialogHandler dialogHandler;
+	
+	private Tutorial tutorial;
 
 	public Viewer(int w, int h, String file) throws IOException, FileNotFoundException
 	{
@@ -50,12 +56,16 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		image = new TaggedImage(w, h, file, polman);
 
 		contextMenu = new RadialMenu(w,h);
-		mainMenu = new MainMenu(this);
+		
+		dialogHandler = new DialogHandler(this);
+		mainMenu = new MainMenu(this, dialogHandler);
 
 		container.setResizable(false);
 		
 		this.width = w;
 		this.height = h;
+		
+		tutorial = new Tutorial(this);
 
 		labelbox = new LabelBox(this);
 		this.add(labelbox);
@@ -96,60 +106,11 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			}
 		});
 
-		// The keylistener should only be on the labelbox in the final design
-		container.addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {}
-
-
-
-			@Override
-			public void keyReleased(KeyEvent Ke) {
-
-				// This is just for testing the file saving. It wont be tied to a keypress in the final version
-				if (KeyEvent.VK_S == Ke.getKeyCode()) {
-
-					
-				}
-
-				// For testing saving the polygon map
-				if (KeyEvent.VK_P == Ke.getKeyCode()) {
-
-					try {
-						final JFileChooser fc = new JFileChooser();
-						int returnVal = fc.showSaveDialog(container);
-
-						if (returnVal == JFileChooser.APPROVE_OPTION){
-							String fileToSave = fc.getSelectedFile().getAbsolutePath();
-							FileOutputStream fout = new FileOutputStream(fileToSave);
-							ObjectOutputStream oos = new ObjectOutputStream(fout);
-							oos.writeObject(polman.getPolygonsArrayList());
-							oos.close();
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-				// Testing loading the polygon map
-				if (KeyEvent.VK_L == Ke.getKeyCode()){
-
-					
-				}
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {}
-		});
-
 		container.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent event) {
 
 				// save polygon data
-				polman.savePolygons();
-
-				System.exit(0);
+				quit();
 
 			}
 		});
@@ -168,6 +129,25 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 	}
 	
+	public void quit()
+	{
+		
+		if (polman.changed())
+		{
+			
+			if (dialogHandler.showSaveDialog())
+				save(dialogHandler.getFilename());
+			
+		}
+		
+		System.exit(0);
+	}
+	
+	public void startTutorial()
+	{
+		tutorial.reset();
+	}
+	
 	public void save(String filename)
 	{
 		
@@ -176,7 +156,12 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		
 		try
 		{
+			
 			image.saveImage(filename);
+			
+			String newFilename = filename.replaceFirst("\\.[^\\.]*$", ".dat");
+			polman.savePolygons(newFilename);
+			
 		}
 		catch (IOException e)
 		{
@@ -197,7 +182,17 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		
 		//polman.loadPolygons(filename);
 		try {
+			
 			image = new TaggedImage(width,height,filename,polman);
+			
+			String newFilename = filename.replaceFirst("\\.[^\\.]*$", ".dat");
+			//"^.*\.[^\.]*$"
+			
+			if (new File(newFilename).exists())
+			{
+				polman.loadPolygons(newFilename);
+			}
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -215,9 +210,16 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 		// handle painter queue
 		Painter p;
+		Queue<Painter> requeue = new LinkedList<Painter>();
 		while ((p = painterQueue.poll()) != null)
 		{
 			p.draw(g);
+			if (p.requeue())
+				requeue.add(p);
+		}
+		for (Painter repaint : requeue)
+		{
+			painterQueue.add(repaint);
 		}
 
 		// draw menu
@@ -249,6 +251,9 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			return;
 		}
 		
+		if (!tutorial.handleClick(me))
+			return;
+		
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON1:
@@ -279,7 +284,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 	public void repaint(Painter p)
 	{
-		painterQueue.add(p);
+		if (!painterQueue.contains(p))
+			painterQueue.add(p);
 		repaint();
 	}
 
@@ -300,7 +306,10 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		{
 			return;
 		}
-
+		
+		if (!tutorial.handleClick(me))
+			return;
+		
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON1:
@@ -324,6 +333,13 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		}
 
 	}
+	
+	public Point getDimensions()
+	{
+		
+		return new Point(width,height);
+		
+	}
 
 	@Override
 	public void mouseReleased(MouseEvent me) {
@@ -332,7 +348,6 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		{
 			return;
 		}
-		
 
 		switch (me.getButton())
 		{

@@ -74,6 +74,13 @@ public class FeedbackHandler implements ActionListener, Painter {
 		g2d.setComposite(c);
 		
 	}
+
+	@Override
+	public boolean requeue() {
+		
+		return timer.isRunning();
+		
+	}
 	
 	
 	

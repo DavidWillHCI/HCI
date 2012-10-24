@@ -9,10 +9,17 @@ public class Main {
 		
 		try
 		{
-		
-			@SuppressWarnings("unused")
-			Viewer v = new Viewer(800,600,args[0]);
-			//Viewer v = new Viewer(800,600,"");
+			
+			if (args.length > 0)
+			{
+				@SuppressWarnings("unused")
+				Viewer v = new Viewer(800,600,args[0]);
+			}
+			else
+			{
+				@SuppressWarnings("unused")
+				Viewer v = new Viewer(800,600,"");
+			}
 			
 		}
 		catch (Exception e)

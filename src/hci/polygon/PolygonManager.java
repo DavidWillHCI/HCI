@@ -3,20 +3,29 @@ package hci.polygon;
 import hci.util.Point;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 public class PolygonManager {
 	
 	private ArrayList<TaggedPolygon> polygons = new ArrayList<TaggedPolygon>();
-	
+	private boolean changed = false;
 	
 	public ArrayList<TaggedPolygon> getPolygonsArrayList(){
 		
 		return polygons;
 		
 	}
+	
+	public boolean changed()
+	{
+		return changed;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void loadPolygons(String file)
 	{
 		try {
@@ -38,12 +47,19 @@ public class PolygonManager {
 			e.printStackTrace();
 		}
 
-		
+		changed = false;
 		
 	}
 	
-	public void savePolygons()
+	public void savePolygons(String str) throws IOException
 	{
+		
+		FileOutputStream fout = new FileOutputStream(str);
+		ObjectOutputStream oos = new ObjectOutputStream(fout);
+		oos.writeObject(getPolygonsArrayList());
+		oos.close();
+		
+		changed = false;
 		
 	}
 	
@@ -93,6 +109,7 @@ public class PolygonManager {
 			if (polygons.get(i).getSelectedPointIdx() != -1)
 			{
 				polygons.get(i).updateSelectedPoint(p);
+				changed = true;
 				return true;
 			}
 		}
@@ -128,6 +145,7 @@ public class PolygonManager {
 			polygons.get(i).complete();
 		}
 		
+		changed = true;
 		return true;
 		
 	}
@@ -227,6 +245,7 @@ public class PolygonManager {
 			{
 				i.remove();
 				repaint = true;
+				changed = true;
 			}
 		}
 		
@@ -284,6 +303,8 @@ public class PolygonManager {
 	public void addNewPoint(Point p)
 	{
 		
+		changed = true;
+		
 		// if last polygon is complete, start new one
 		TaggedPolygon polygon;
 		if (polygons.size() > 0)
@@ -333,6 +354,7 @@ public class PolygonManager {
 				{
 					polygons.remove(polygons.size() - 1);
 				}
+				changed = true;
 				return true;
 			}
 			
