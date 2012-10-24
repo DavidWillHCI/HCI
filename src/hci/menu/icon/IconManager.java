@@ -8,11 +8,9 @@ import javax.imageio.*;
 
 public class IconManager {
 	
-	private static final int ICON_WIDTH = 30, ICON_HEIGHT = 30;
-	
 	private ArrayList<Icon> icons = new ArrayList<Icon>();
 	
-	public IconManager(Icon[] icons) throws IOException, FileNotFoundException
+	public IconManager(Icon[] icons, int width, int height) throws IOException, FileNotFoundException
 	{
 		
 		for (int i = 0; i < icons.length; i++)
@@ -27,9 +25,9 @@ public class IconManager {
 				e.printStackTrace();
 			}
 			
-			if (originalImage.getWidth(null) > ICON_WIDTH || originalImage.getHeight(null) > ICON_HEIGHT) {
-				int newWidth = originalImage.getWidth(null) > ICON_WIDTH ? ICON_WIDTH : (originalImage.getWidth(null) * ICON_WIDTH)/originalImage.getHeight(null);
-				int newHeight = originalImage.getHeight(null) > ICON_HEIGHT ? ICON_HEIGHT : (originalImage.getHeight(null) * ICON_HEIGHT)/originalImage.getWidth(null);
+			if (originalImage.getWidth(null) > width || originalImage.getHeight(null) > height) {
+				int newWidth = originalImage.getWidth(null) > width ? width : (originalImage.getWidth(null) * width)/originalImage.getHeight(null);
+				int newHeight = originalImage.getHeight(null) > height ? height : (originalImage.getHeight(null) * height)/originalImage.getWidth(null);
 				scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
 			}
 			else

@@ -31,7 +31,7 @@ public class RadialMenu {
 				new MenuIcon()
 		};
 		
-		iconman = new IconManager(icons);
+		iconman = new IconManager(icons,30,30);
 	}
 	
 	public void show(Point p)

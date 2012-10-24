@@ -48,7 +48,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		image = new TaggedImage(w, h, file, polman);
 
 		contextMenu = new RadialMenu();
-		mainMenu = new MainMenu();
+		mainMenu = new MainMenu(this);
 
 		container.setResizable(false);
 
@@ -101,6 +101,15 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			contextMenu.draw(g);
 		}
 		
+	}
+	
+	public void hideMainMenu()
+	{
+		if (image.isImageLoaded())
+		{
+			mainMenu.hide();
+			repaint();
+		}
 	}
 
 	@Override
@@ -233,6 +242,10 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					{
 						showFeedback = true;
 					}
+					break;
+				case 5:
+					mainMenu.show();
+					repaint();
 					break;
 				case 7:
 					
