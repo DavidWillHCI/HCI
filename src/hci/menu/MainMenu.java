@@ -1,12 +1,15 @@
 package hci.menu;
 
+import hci.menu.filedialog.*;
 import hci.menu.icon.*;
+import hci.menu.icon.Icon;
 import hci.viewer.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+
+import javax.swing.*;
 
 public class MainMenu implements MouseListener, MouseMotionListener {
 
@@ -18,10 +21,13 @@ public class MainMenu implements MouseListener, MouseMotionListener {
 	private Viewer parent;
 	private int width = 0, height = 0;
 	private IconManager iconman;
+	private DialogHandler dialog;
 	
 	public MainMenu(Viewer parent) throws FileNotFoundException, IOException
 	{
 		this.parent = parent;
+		
+		dialog = new DialogHandler(parent);
 		
 		// load icons
 		Icon[] icons = {
@@ -168,15 +174,37 @@ public class MainMenu implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
+		if (!visible)
+			return;
+		
 		switch (selected)
 		{
 		case SAVE:
+			if (dialog.showSaveDialog())
+			{
+				parent.save(dialog.getFilename());
+			}
+			else
+			{
+				// TODO: alert user
+			}
 			break;
 		case LOAD:
+			if (dialog.showLoadDialog())
+			{
+				parent.load(dialog.getFilename());
+			}
+			else
+			{
+				// TODO: alert user
+			}
 			break;
 		case TUTORIAL:
 			break;
 		case EXIT:
+			
+			// TODO: ask user to save?
+			
 			System.exit(0);
 			break;
 		case MENU:
@@ -273,42 +301,37 @@ public class MainMenu implements MouseListener, MouseMotionListener {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void mouseMoved(MouseEvent arg0) {
 		
 		// check for change,
 		if (updatePosition(arg0.getPoint()))
 			// if so redraw
 			parent.repaint();
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
 		
 	}
 	

@@ -31,7 +31,7 @@ public class PolygonManager {
 			}
 			System.out.println("Trying to unserialize");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// TODO: handle exceptions properly
 			e.printStackTrace();
 		} catch (ClassNotFoundException e)
 		{
@@ -249,7 +249,6 @@ public class PolygonManager {
 			
 		}
 		
-		//TODO
 		return null;
 		
 	}

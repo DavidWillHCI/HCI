@@ -33,6 +33,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 	private FeedbackHandler feedback;
 	private LabelBox labelbox;
+	
+	private int width, height;
 
 	public Viewer(int w, int h, String file) throws IOException, FileNotFoundException
 	{
@@ -51,6 +53,9 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		mainMenu = new MainMenu(this);
 
 		container.setResizable(false);
+		
+		this.width = w;
+		this.height = h;
 
 		labelbox = new LabelBox(this);
 		this.add(labelbox);
@@ -59,8 +64,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 			@Override
 			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
-
+				
 			}
 
 			@Override
@@ -88,8 +92,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-
+				
 			}
 		});
 
@@ -107,17 +110,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				// This is just for testing the file saving. It wont be tied to a keypress in the final version
 				if (KeyEvent.VK_S == Ke.getKeyCode()) {
 
-					final JFileChooser fc = new JFileChooser();
-					int returnVal = fc.showSaveDialog(container);
-
-					if (returnVal == JFileChooser.APPROVE_OPTION){
-						String fileToSave = fc.getSelectedFile().getAbsolutePath();
-						try {
-							image.saveImage(fileToSave);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
+					
 				}
 
 				// For testing saving the polygon map
@@ -142,14 +135,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				// Testing loading the polygon map
 				if (KeyEvent.VK_L == Ke.getKeyCode()){
 
-					final JFileChooser fc = new JFileChooser();
-					int returnVal = fc.showOpenDialog(container);
-
-					if (returnVal == JFileChooser.APPROVE_OPTION){
-						String polygonsToLoad = fc.getSelectedFile().getAbsolutePath();
-						polman.loadPolygons(polygonsToLoad);
-						repaint();	
-					}
+					
 				}
 			}
 
@@ -181,7 +167,46 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		container.setVisible(true);
 
 	}
-
+	
+	public void save(String filename)
+	{
+		
+		if (filename == null) 
+			return;
+		
+		try
+		{
+			image.saveImage(filename);
+		}
+		catch (IOException e)
+		{
+			
+			
+			// TODO: handle exception proeprly
+			
+			
+		}
+		
+	}
+	
+	public void load(String filename)
+	{
+		
+		// TODO: handle exceptions properly
+		// TODO: load polygons
+		
+		//polman.loadPolygons(filename);
+		try {
+			image = new TaggedImage(width,height,filename,polman);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		repaint();
+		
+	}
+	
 	public void paintComponent(Graphics g)
 	{
 
@@ -260,14 +285,12 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -337,6 +360,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 					if(polman.getHighlighted() != null){
 						labelbox.setVisible(true);
+						labelbox.setText(polman.getHighlighted().getNameOfPolygon());
 
 						Point point = contextMenu.getPosition();
 						Point myPoint = new Point(point.getX(), point.getY());
@@ -354,9 +378,9 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					}
 					break;
 				case 3:
-
+					
 					if (labelbox.isVisible()){
-
+						
 						try{
 							polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
 							polman.finishPolygon();
@@ -364,26 +388,28 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						catch(NullPointerException e){}
 
 						labelbox.setVisible(false);
+						labelbox.setText("");
 
 					}
-
 					else if (polman.openPolygon())
 					{
 
-						labelbox.setVisible(true);
 						Point point = contextMenu.getPosition();
 
 						Point myPoint = new Point(point.getX(), point.getY());
 						labelbox.setPosition(myPoint);
 						labelbox.requestFocus();
 
-
-
-
 						if (!polman.finishPolygon())
 						{
 							showFeedback = true;
 						}
+						else
+						{
+							labelbox.setVisible(true);
+							labelbox.setText("");
+						}
+						
 					}
 					else
 					{
@@ -414,6 +440,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 							if (polman.removeHighlighted())
 							{
 								repaint();
+								labelbox.setVisible(false);
 							}
 							else
 							{
@@ -484,7 +511,12 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		}
 
 	}
-
+	
+	public boolean isImageLoaded()
+	{
+		return image.isImageLoaded();
+	}
+	
 	@Override
 	public void mouseMoved(MouseEvent me) {
 
@@ -507,7 +539,6 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
+		
 	}
 }

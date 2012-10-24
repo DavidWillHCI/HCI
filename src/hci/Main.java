@@ -11,8 +11,8 @@ public class Main {
 		{
 		
 			@SuppressWarnings("unused")
-			//Viewer v = new Viewer(800,600,args[0]);
-			Viewer v = new Viewer(800,600,"");
+			Viewer v = new Viewer(800,600,args[0]);
+			//Viewer v = new Viewer(800,600,"");
 			
 		}
 		catch (Exception e)

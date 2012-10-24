@@ -11,6 +11,8 @@ import java.io.*;
 
 import javax.imageio.*;
 
+// TODO: redraw base if image too small
+
 public class TaggedImage {
 
 	private static final int POINT_SIZE = 10;
@@ -175,7 +177,6 @@ public class TaggedImage {
 			g.fillOval(points[i].getX()-(int)(POINT_SIZE / 2), points[i].getY()-(int)(POINT_SIZE / 2), POINT_SIZE, POINT_SIZE);
 
 			lastPoint = points[i];
-			System.out.println("Drawing: " + points[i].toString());
 		}
 
 		if (polygon.isEditing() && polygon.isComplete())
