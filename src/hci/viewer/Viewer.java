@@ -46,7 +46,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 		image = new TaggedImage(w, h, file, polman);
 
-		menu = new RadialMenu();
+		menu = new RadialMenu(w,h);
 
 		container.setResizable(false);
 

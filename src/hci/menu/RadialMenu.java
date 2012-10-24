@@ -20,8 +20,9 @@ public class RadialMenu {
 	private Point position;
 	private double alphaMod = 1;
 	private IconManager iconman;
+	private int containerWidth, containerHeight;
 	
-	public RadialMenu() throws IOException, FileNotFoundException
+	public RadialMenu(int containerWidth, int containerHeight) throws IOException, FileNotFoundException
 	{
 		// load icons
 		Icon[] icons = {
@@ -31,6 +32,9 @@ public class RadialMenu {
 				new MenuIcon()
 		};
 		
+		this.containerWidth = containerWidth;
+		this.containerHeight = containerHeight;
+		
 		iconman = new IconManager(icons);
 	}
 	
@@ -39,8 +43,27 @@ public class RadialMenu {
 		
 		state = 0;
 		visible = true;
-		position = p;
 		alphaMod = 1;
+		
+		if (p.getX() - SIZE*2 - BORDER < 0)
+		{
+			p.setX(SIZE*2 + BORDER);
+		}
+		else if (p.getX() + SIZE*2 + BORDER > containerWidth)
+		{
+			p.setX(containerWidth - SIZE*2 - BORDER);
+		}
+		
+		if (p.getY() - SIZE*2 - BORDER < 0)
+		{
+			p.setY(SIZE*2 + BORDER);
+		}
+		else if (p.getY() + SIZE*2 + BORDER > containerHeight)
+		{
+			p.setY(containerHeight - SIZE*2 - BORDER);
+		}
+		
+		position = p;
 		
 	}
 	
