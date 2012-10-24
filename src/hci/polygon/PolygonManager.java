@@ -2,21 +2,64 @@ package hci.polygon;
 
 import hci.util.Point;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.*;
 
 public class PolygonManager {
 	
 	private ArrayList<TaggedPolygon> polygons = new ArrayList<TaggedPolygon>();
 	
-	public void loadPolygons(int hash)
-	{
+	
+	public ArrayList<TaggedPolygon> getPolygonsArrayList(){
 		
+		return polygons;
+		
+	}
+	public void loadPolygons(String file)
+	{
+		try {
+			FileInputStream fin = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fin);
+
+			// The left hand side of this assignment should instead create the polygon i think
+			ArrayList<TaggedPolygon> savedPolygons = new ArrayList<TaggedPolygon>();
+			savedPolygons = (ArrayList<TaggedPolygon>) ois.readObject();
+			for (int i = 0; i < savedPolygons.size(); i++){
+			polygons.add(savedPolygons.get(i));
+			}
+			System.out.println("Trying to unserialize");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
 		
 		
 	}
 	
 	public void savePolygons()
 	{
+		
+	}
+	
+	public TaggedPolygon getHighlighted(){
+		
+		for (int i = 0; i < polygons.size(); i++) {
+			
+			if (polygons.get(i).isHighlighted()){
+				
+				return polygons.get(i);
+				
+			}
+			
+		}
+		
+		return null;
 		
 	}
 	
@@ -55,6 +98,13 @@ public class PolygonManager {
 		}
 		
 		return false;
+		
+	}
+	
+	public TaggedPolygon getNewPolygon(){
+		
+		TaggedPolygon p = polygons.get(polygons.size() - 1);
+		return p;
 		
 	}
 	
@@ -181,6 +231,27 @@ public class PolygonManager {
 		}
 		
 		return repaint;
+	}
+	
+	/**
+	 * Finds out which Polygon is currently being edited
+	 * @return the taggedPolygon being edited
+	 */
+	public TaggedPolygon currentlyEditedPolygon(){
+		
+		for (int i = 0; i < polygons.size(); i++) {
+			
+			if (polygons.get(i).isEditing()){
+				
+				return polygons.get(i);
+				
+			}
+			
+		}
+		
+		//TODO
+		return null;
+		
 	}
 	
 	public boolean openPolygon()

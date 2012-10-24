@@ -11,12 +11,24 @@ public class TaggedPolygon extends Polygon {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+
+
 	private boolean editing = false;
 	private boolean complete = false;
 	private boolean highlighted = false;
+	private String nameOfPolygon;
 	
 	private int selectedPointIdx = -1;
 	
+	
+	public String getNameOfPolygon() {
+		return nameOfPolygon;
+	}
+
+	public void setNameOfPolygon(String nameOfPolygon) {
+		this.nameOfPolygon = nameOfPolygon;
+	}
+
 	public int size()
 	{
 		return npoints;
@@ -52,6 +64,10 @@ public class TaggedPolygon extends Polygon {
 	public void clearSelectedPoint()
 	{
 		selectedPointIdx = -1;
+	}
+	
+	public void setHighlighted(boolean highlighted) {
+		this.highlighted = highlighted;
 	}
 	
 	public void updateSelectedPoint(Point p)

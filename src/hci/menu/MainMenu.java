@@ -207,7 +207,6 @@ public class MainMenu implements MouseListener, MouseMotionListener {
 	{
 		
 		int x, y, w, h, 
-			r = MENU_SIZE/10,
 			oldSelected = selected,
 			space = MENU_SIZE/35;
 		

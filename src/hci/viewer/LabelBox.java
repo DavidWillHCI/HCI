@@ -22,10 +22,9 @@ public class LabelBox extends JTextField implements ActionListener {
 		parent.setLayout(null);
 		addActionListener(this);
 		setEditable(true);
-		setVisible(false);
+		setVisible(true);
 		parent.add(this);
 		size = getPreferredSize();
-		System.out.println("Added the TXT field to the panel");
 		repaint();
 		
 	}
@@ -50,7 +49,16 @@ public class LabelBox extends JTextField implements ActionListener {
 		
 	}
 
-
+	public String editLabelBox(){
+		
+		String labelOfPolygon = this.getText();
+		this.setVisible(false);
+		
+		
+		return labelOfPolygon;
+	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
