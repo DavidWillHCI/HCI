@@ -5,7 +5,9 @@ import hci.polygon.PolygonManager;
 import hci.util.Point;
 
 import java.awt.*;
+import java.awt.image.*;
 import java.io.*;
+import java.util.Arrays;
 
 import javax.imageio.*;
 
@@ -15,17 +17,47 @@ public class TaggedImage {
 	
 	private Image originalImage, scaledImage;
 	private PolygonManager polman;
+	private boolean imageLoaded = false;
 	
 	public TaggedImage(int w, int h, String file, PolygonManager polman) throws FileNotFoundException, IOException
 	{
-		originalImage = ImageIO.read(new File(file));
 		
-		setImageSize(w,h);
-		
-		// load the polgyons by image hash
-		polman.loadPolygons(originalImage.hashCode());
+		if (file != "")
+		{
+			originalImage = ImageIO.read(new File(file));
+			imageLoaded = true;
+			
+			setImageSize(w,h);
+			
+			// load the polgyons by image hash
+			polman.loadPolygons(originalImage.hashCode());
+		}
+		else
+		{
+			
+			BufferedImage bi = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+			
+			for (int i = 0; i < w; i++)
+			{
+				for (int j = 0; j < h; j++)
+				{
+					bi.setRGB(i, j, 0);
+				}
+			}
+			
+			originalImage = bi;
+			
+			
+			setImageSize(w,h);
+			
+		}
 		
 		this.polman = polman;
+	}
+	
+	public boolean isImageLoaded()
+	{
+		return imageLoaded;
 	}
 	
 	public void setImageSize(int w, int h)
