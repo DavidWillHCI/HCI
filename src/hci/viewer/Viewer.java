@@ -375,13 +375,14 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 					if(polman.getHighlighted() != null){
 						labelbox.setVisible(true);
+						labelbox.requestFocus();
 						labelbox.setText(polman.getHighlighted().getNameOfPolygon());
 
 						Point point = contextMenu.getPosition();
 						Point myPoint = new Point(point.getX(), point.getY());
 
 						labelbox.setPosition(myPoint);
-						labelbox.requestFocus();
+						
 					}
 
 					repaint();
@@ -423,6 +424,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						{
 							labelbox.setVisible(true);
 							labelbox.setText("");
+							labelbox.requestFocus();
 						}
 						
 					}
