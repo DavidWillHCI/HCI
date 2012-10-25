@@ -457,6 +457,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					}
 					break;
 				case 5:
+					polman.cancelOpen();
 					mainMenu.show();
 					repaint();
 					break;

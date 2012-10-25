@@ -47,6 +47,12 @@ public class DialogHandler {
 		if (result == JFileChooser.APPROVE_OPTION)
 		{
 			filename = fc.getSelectedFile().getAbsolutePath();
+			
+			if (!filename.contains("."))
+			{
+				filename += ".jpg";
+			}
+			
 			return true;
 		}
 		else

@@ -25,6 +25,16 @@ public class PolygonManager {
 		return changed;
 	}
 	
+	public void cancelOpen()
+	{
+		
+		if (openPolygon())
+		{
+			polygons.remove(polygons.size() - 1);
+		}
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void loadPolygons(String file)
 	{

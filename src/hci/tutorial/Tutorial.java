@@ -4,20 +4,27 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+import javax.swing.Timer;
+
 import hci.menu.*;
 import hci.menu.icon.*;
 import hci.viewer.*;
 import hci.util.Point;
 
-public class Tutorial implements Painter, MouseListener
+public class Tutorial implements Painter, MouseListener, ActionListener
 {
+	
+	private static final int FRAME_DRAW_TIME = 25;
 	
 	private Viewer viewer;
 	private IconManager iconman;
 	private int stage = 0;
-	private boolean enabled = false;
+	private boolean enabled = false, increasing = false;
 	private Stage[] stages;
 	private RadialMenu menu;
+
+	private Timer timer;
+	private double alphaMod = 1;
 	
 	public Tutorial(Viewer viewer, RadialMenu menu) throws FileNotFoundException, IOException
 	{
@@ -49,6 +56,9 @@ public class Tutorial implements Painter, MouseListener
 				new Stage9Final(iconman),
 			};
 		
+		this.timer = new Timer(FRAME_DRAW_TIME,this);
+		timer.stop();
+		
 	}
 
 	private void enable(boolean enable)
@@ -70,6 +80,8 @@ public class Tutorial implements Painter, MouseListener
 		
 		viewer.removeMouseListener(viewer);
 		viewer.addMouseListener(this);
+		
+		timer.start();
 	}
 	
 	public void stop()
@@ -79,6 +91,7 @@ public class Tutorial implements Painter, MouseListener
 		
 		viewer.removeMouseListener(this);
 		viewer.addMouseListener(viewer);
+		timer.stop();
 	}
 	
 	private Stage getCurrentStage()
@@ -117,7 +130,16 @@ public class Tutorial implements Painter, MouseListener
 			return;
 		}
 		
+		Graphics2D g2d = (Graphics2D)g;
+		Composite c = g2d.getComposite();
+		int type = AlphaComposite.SRC_OVER;
+		g2d.setComposite(AlphaComposite.getInstance(type, ((float)alphaMod)));
+		
+		
 		s.draw(g);
+		
+		g2d.setComposite(c);
+		
 		
 		// show close tutorial button
 		Point size = viewer.getDimensions();
@@ -226,6 +248,28 @@ public class Tutorial implements Painter, MouseListener
 		
 		viewer.mouseReleased(me);
 		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		viewer.repaint(this);
+		
+		if (increasing)
+			alphaMod += 0.1;
+		else
+			alphaMod -= 0.1;
+		
+		if (alphaMod < 0.4)
+		{
+			increasing = true;
+			alphaMod = 0.4;
+		}
+		if (alphaMod > 1)
+		{
+			increasing = false;
+			alphaMod = 1;
+		}
 	}
 	
 }
