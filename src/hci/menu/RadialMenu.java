@@ -5,6 +5,7 @@ import java.io.*;
 
 import hci.menu.icon.*;
 import hci.util.Point;
+import hci.audio.*;
 
 public class RadialMenu {
 	
@@ -21,6 +22,7 @@ public class RadialMenu {
 	private double alphaMod = 1;
 	private IconManager iconman;
 	private int containerWidth, containerHeight;
+	private SoundPlayer clicker;
 	
 	public RadialMenu(int containerWidth, int containerHeight) throws IOException, FileNotFoundException
 	{
@@ -31,6 +33,8 @@ public class RadialMenu {
 				new DeleteIcon(),
 				new MenuIcon()
 		};
+		
+		clicker = new SoundPlayer("sounds/click.wav");
 		
 		this.containerWidth = containerWidth;
 		this.containerHeight = containerHeight;
@@ -226,6 +230,9 @@ public class RadialMenu {
 		{
 			return false;
 		}
+		
+		clicker.play();
+		
 		return true;
 		
 	}

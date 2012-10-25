@@ -17,6 +17,8 @@ public class PolygonManager {
 		return polygons;
 		
 	}
+	
+	@SuppressWarnings("unchecked")
 	public void loadPolygons(String file)
 	{
 		try {
