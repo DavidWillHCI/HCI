@@ -3,15 +3,19 @@ package hci.menu.icon;
 import java.awt.Image;
 import java.io.*;
 import java.util.*;
+import hci.util.Point;
 
 import javax.imageio.*;
 
 public class IconManager {
 	
 	private ArrayList<Icon> icons = new ArrayList<Icon>();
+	private Point position;
 	
 	public IconManager(Icon[] icons, int width, int height) throws IOException, FileNotFoundException
 	{
+		
+		position = new Point(width, height);
 		
 		for (int i = 0; i < icons.length; i++)
 		{
@@ -40,6 +44,11 @@ public class IconManager {
 			
 		}
 		
+	}
+	
+	public Point getSize()
+	{
+		return position;
 	}
 	
 	public Icon getIconByName(String name)

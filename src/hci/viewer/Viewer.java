@@ -22,6 +22,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private boolean labelVisible = false;
+	
 	private TaggedImage image;
 
 	private JFrame container;
@@ -65,7 +67,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		this.width = w;
 		this.height = h;
 		
-		tutorial = new Tutorial(this);
+		tutorial = new Tutorial(this, contextMenu);
 
 		labelbox = new LabelBox(this);
 		this.add(labelbox);
@@ -81,18 +83,25 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			public void keyReleased(KeyEvent Ke) {
 				if (KeyEvent.VK_ENTER == Ke.getKeyCode() && labelbox.isVisible()) {
 
+					tutorial.stop();
+					
 					try{
 
 						polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox()); // Null pointer because on initial polygon creation it is not being "edited"
 						labelbox.setVisible(false);
+						labelVisible = false;
 						polman.finishPolygon();
 						repaint();
+						
+						
+						
 					}
 					catch(NullPointerException e){}
 					try{
 
 						polman.getNewPolygon().setNameOfPolygon(labelbox.editLabelBox());
 						labelbox.setVisible(false);
+						labelVisible = false;
 						polman.finishPolygon();
 						repaint();
 					}
@@ -116,6 +125,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		});
 
 		labelbox.setVisible(false);
+		labelVisible = false;
 
 		feedback = new FeedbackHandler(this);
 
@@ -127,6 +137,11 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		
 		container.setVisible(true);
 
+	}
+	
+	public boolean labelboxVisible()
+	{
+		return labelVisible;
 	}
 	
 	public void quit()
@@ -246,40 +261,6 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 	@Override
 	public void mouseClicked(MouseEvent me) {
 		
-		if (mainMenu.showing())
-		{
-			return;
-		}
-		
-		if (!tutorial.handleClick(me))
-			return;
-		
-		switch (me.getButton())
-		{
-		case MouseEvent.BUTTON1:
-
-			if (!polman.isEditing())
-			{
-				if (!contextMenu.showing())
-				{
-					polman.addNewPoint(new Point(me.getX(), me.getY()));
-					repaint();
-				}
-
-				// unhighlight all polygons
-				if (polman.openPolygon())
-				{
-
-					if (polman.removeHighlights())
-					{
-						repaint();
-					}
-
-				}
-			}
-
-		}
-
 	}
 
 	public void repaint(Painter p)
@@ -307,9 +288,6 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			return;
 		}
 		
-		if (!tutorial.handleClick(me))
-			return;
-		
 		switch (me.getButton())
 		{
 		case MouseEvent.BUTTON1:
@@ -320,6 +298,25 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				polman.highlightPoint(new Point(me.getX(),me.getY()));
 				repaint();
 
+			}
+			else
+			{
+				if (!contextMenu.showing())
+				{
+					polman.addNewPoint(new Point(me.getX(), me.getY()));
+					repaint();
+				}
+
+				// unhighlight all polygons
+				if (polman.openPolygon())
+				{
+
+					if (polman.removeHighlights())
+					{
+						repaint();
+					}
+
+				}
 			}
 
 			break;
@@ -340,7 +337,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		return new Point(width,height);
 		
 	}
-
+	
 	@Override
 	public void mouseReleased(MouseEvent me) {
 		
@@ -367,6 +364,9 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 				switch (state)
 				{
+				case -1:
+					showFeedback = true;
+					break;
 				case 0:
 					break;
 				case 1:
@@ -375,6 +375,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 					if(polman.getHighlighted() != null){
 						labelbox.setVisible(true);
+						labelVisible = true;
 						labelbox.requestFocus();
 						labelbox.setText(polman.getHighlighted().getNameOfPolygon());
 
@@ -391,6 +392,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					{
 						showFeedback = true;
 						labelbox.setVisible(false);
+						labelVisible = false;
 					}
 					break;
 				case 3:
@@ -404,6 +406,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						catch(NullPointerException e){}
 
 						labelbox.setVisible(false);
+						labelVisible = false;
 						labelbox.setText("");
 
 					}
@@ -423,6 +426,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						else
 						{
 							labelbox.setVisible(true);
+							labelVisible = true;
 							labelbox.setText("");
 							labelbox.requestFocus();
 						}
@@ -458,6 +462,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 							{
 								repaint();
 								labelbox.setVisible(false);
+								labelVisible = false;
 							}
 							else
 							{

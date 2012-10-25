@@ -42,6 +42,11 @@ public class RadialMenu {
 		iconman = new IconManager(icons,30,30);
 	}
 	
+	public void setState(int i)
+	{
+		state = i;
+	}
+	
 	public void show(Point p)
 	{
 		
@@ -162,6 +167,11 @@ public class RadialMenu {
 		
 		return state;
 		
+	}
+	
+	public int getState()
+	{
+		return state;
 	}
 	
 	public Point getPosition()
