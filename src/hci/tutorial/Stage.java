@@ -44,19 +44,24 @@ public abstract class Stage
 		
 	}
 	
+	public void keyPressed()
+	{
+		
+	}
+	
 	public boolean openContextMenu()
 	{
 		return false;
 	}
 	
-	public boolean complete()
-	{
-		return complete;
-	}
-	
 	public boolean closeContextMenu(int state)
 	{
 		return true;
+	}
+	
+	public boolean complete()
+	{
+		return complete;
 	}
 	
 	public void reset()

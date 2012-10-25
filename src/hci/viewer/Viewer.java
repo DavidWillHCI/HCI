@@ -81,9 +81,12 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 
 			@Override
 			public void keyReleased(KeyEvent Ke) {
+				tutorial.keyPressed();
+				
 				if (KeyEvent.VK_ENTER == Ke.getKeyCode() && labelbox.isVisible()) {
-
-					tutorial.stop();
+					
+					if (tutorial.isEnabled())
+						tutorial.stop();
 					
 					try{
 
@@ -107,6 +110,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					}
 					catch(NullPointerException n){}
 				}
+				
 			}
 
 			@Override
@@ -408,6 +412,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 						labelbox.setVisible(false);
 						labelVisible = false;
 						labelbox.setText("");
+						if (tutorial.isEnabled())
+							tutorial.stop();
 
 					}
 					else if (polman.openPolygon())

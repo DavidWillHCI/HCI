@@ -32,5 +32,10 @@ public class Stage8Keyboard extends Stage {
 		g.drawImage(customIconman.getIconByName("TutorialKeyboardIcon").getImage(), 400 - (customIconman.getSize().getX()/2), 300 - (customIconman.getSize().getY()/2), null);
 		
 	}
-
+	
+	public void keyPressed()
+	{
+		complete = true;
+	}
+	
 }

@@ -46,6 +46,7 @@ public class Tutorial implements Painter, MouseListener
 				new Stage6(iconman),
 				new Stage7Complete(iconman),
 				new Stage8Keyboard(iconman),
+				new Stage9Final(iconman),
 			};
 		
 	}
@@ -137,7 +138,7 @@ public class Tutorial implements Painter, MouseListener
 	@Override
 	public void mouseClicked(MouseEvent me) {
 		
-		System.out.println("(" + me.getX() + "," + me.getY() + ")");
+		//System.out.println("(" + me.getX() + "," + me.getY() + ")");
 		
 	}
 
@@ -151,6 +152,18 @@ public class Tutorial implements Painter, MouseListener
 		
 	}
 
+	public void keyPressed()
+	{
+		
+		Stage s = getCurrentStage();
+		if (s != null)
+		{
+			s.keyPressed();
+			viewer.repaint(this);
+		}
+		
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent me) {
 		
