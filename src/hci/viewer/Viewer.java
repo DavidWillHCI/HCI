@@ -364,8 +364,7 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 			{
 				
 				int state = contextMenu.close();
-					
-
+				
 				switch (state)
 				{
 				case -1:
@@ -404,14 +403,28 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 					if (labelbox.isVisible()){
 						
 						try{
-							polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox());
+
+							polman.currentlyEditedPolygon().setNameOfPolygon(labelbox.editLabelBox()); // Null pointer because on initial polygon creation it is not being "edited"
+							labelbox.setVisible(false);
+							labelVisible = false;
 							polman.finishPolygon();
+							repaint();
+							
+							
+							
 						}
 						catch(NullPointerException e){}
+						try{
 
-						labelbox.setVisible(false);
-						labelVisible = false;
-						labelbox.setText("");
+							polman.getNewPolygon().setNameOfPolygon(labelbox.editLabelBox());
+							labelbox.setVisible(false);
+							labelVisible = false;
+							polman.finishPolygon();
+							repaint();
+						}
+						catch(NullPointerException n){}
+
+						
 						if (tutorial.isEnabled())
 							tutorial.stop();
 
