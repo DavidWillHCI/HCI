@@ -148,9 +148,8 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 		return labelVisible;
 	}
 	
-	public void quit()
+	public void saveIfChanged()
 	{
-		
 		if (polman.changed())
 		{
 			
@@ -158,6 +157,12 @@ public class Viewer extends JPanel implements ActionListener, MouseListener, Mou
 				save(dialogHandler.getFilename());
 			
 		}
+	}
+	
+	public void quit()
+	{
+		
+		saveIfChanged();
 		
 		System.exit(0);
 	}

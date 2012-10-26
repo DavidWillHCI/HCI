@@ -17,13 +17,25 @@ public class TaggedImage {
 
 	private static final int POINT_SIZE = 10;
 
-	private Image originalImage, scaledImage;
+	private Image originalImage, scaledImage, blankImage;
 	private PolygonManager polman;
 	private boolean imageLoaded = false;
 	private String filePath;
 	
 	public TaggedImage(int w, int h, String file, PolygonManager polman) throws FileNotFoundException, IOException
 	{
+		
+		BufferedImage blankImage = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+		
+		for (int i = 0; i < w; i++)
+		{
+			for (int j = 0; j < h; j++)
+			{
+				blankImage.setRGB(i, j, 0);
+			}
+		}
+		
+		this.blankImage = (Image)blankImage;
 		
 		if (file != "")
 		{
@@ -81,6 +93,7 @@ public class TaggedImage {
 	{
 
 		// draw the image
+		g.drawImage(blankImage, 0, 0, null);
 		g.drawImage(scaledImage, 0, 0, null);
 
 		// draw the polygons

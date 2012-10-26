@@ -198,6 +198,8 @@ public class MainMenu implements MouseListener, MouseMotionListener {
 			}
 			break;
 		case TUTORIAL:
+			parent.saveIfChanged();
+			parent.load("images/U1003_0000.jpg");
 			parent.startTutorial();
 			parent.hideMainMenu();
 			break;
